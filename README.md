@@ -1,5 +1,6 @@
 ## Dote (toDO-noTE)
 
-i have nothing relevant here yet
-go read the docs branch or just use the lua-cli bit with working code
+
+Website and server for [dote](https://github.com/spiderforrest/dote)
+Under construction!
 
