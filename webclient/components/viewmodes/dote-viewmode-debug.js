@@ -7,12 +7,15 @@ export class DoteViewmodeDebug extends LitElement {
 
   constructor() {
     super();
+    this.rawJSONUserData = "shit shit shit fuck shit";
   }
 
   render() {
     return html`
-      <p>${this.rawJSONUserData}</p>
-      <p>test</p>
+      <section>
+        <p>${this.rawJSONUserData}</p>
+        <p>test</p>
+      </section>
     `
   }
 }

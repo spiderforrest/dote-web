@@ -1,9 +1,12 @@
 import {LitElement, css, html} from 'lit';
 import {map} from 'lit/directives/map.js';
+import {classMap} from 'lit/directives/class-map.js';
 
 import {DoteViewmodeDebug} from './viewmodes/dote-viewmode-debug.js';
 
 export class DoteViewmodeSelector extends LitElement {
+
+  // properties and constructor
   static properties = {
     currentViewmode: {type: String},
     _viewmodeList: {state: true},
@@ -21,18 +24,19 @@ export class DoteViewmodeSelector extends LitElement {
     ]
 
     // set to default viewmode
-    this.currentViewmode = "viewmode_debug";
+    this.currentViewmode = "DEBUG";
   }
-  
+
+  // render and helper functions ==============
   render() {
-    // print names 
     return html`
       <nav>
-        <ul>
+        <ul class="dote-viewmode-selector-list">
           ${this._viewmodeList
+              // render out list of available modes w/separator chars between them
               .map((viewmode, index) => {
               return html`
-                <li @click="${this._switchCurrentViewmode}" style="display:inline" data-viewmode=${viewmode.displayName}>
+                <li @click="${this._switchCurrentViewmode}" class=${viewmode.displayName === this.currentViewmode ? "dote-selected-viewmode" : "dote-not-selected-viewmode"} data-viewmode=${viewmode.displayName}>
                     ${viewmode.displayName}
                 </li>
                 ${index !== this._viewmodeList.length - 1 ? " | " : ""}
@@ -44,9 +48,31 @@ export class DoteViewmodeSelector extends LitElement {
     `
   }
 
+  // handler for clicking on a viewmode
   _switchCurrentViewmode(e) {
-    console.log(e.target.dataset.viewmode);
+    this.currentViewmode = e.target.dataset.viewmode;
   }
+
+  // styling =================================
+
+  static styles = css`
+    .dote-viewmode-selector-list {
+      list-style: none;
+    }
+    
+    .dote-selected-viewmode {
+      border: darkgray dashed thick;
+      display: inline;
+      margin-left: 1em;
+      margin-right: 1em;
+    }
+    
+    .dote-not-selected-viewmode {
+      display: inline;
+      margin-left: 1em;
+      margin-right: 1em;
+    }
+  `;
 }
 
 customElements.define('dote-viewmode-selector', DoteViewmodeSelector);
