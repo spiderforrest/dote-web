@@ -79,8 +79,8 @@ router.get("/data/uuid/:uuid", auth_middleware, (req, res) => {
 })
 
 router.post("/data/create", auth_middleware, (req, res) => {
-  create(req.session.user, req.body.fields);
-  res.status(200);
+  const item = create(req.session.user, req.body.fields);
+  res.status(200).json(item);
 })
 
 router.put("/data/modify", auth_middleware, (req, res) => {

@@ -16,7 +16,7 @@ class Items {
 
     // check if the cache is safe to trust as correct (no other clients modified data)
     // like, if the ctimes are within 15s of each other
-    if (15000 > Math.abs(ctime - remote_ctime)) {
+    if (15000/*ms*/ > Math.abs(ctime - remote_ctime)) {
       this.#items = cache;
       this.#ctime = ctime;
     } else {
@@ -30,12 +30,11 @@ class Items {
 
   // updates the internal cache and local storage with new items
   #update_cache(new_list) {
-    console.log(new_list)
     // go over each of the new items
-      for(const item of new_list) {
+    for(const item of new_list) {
       const id = item.id;
       // assign them DIRECTLY to the cache array in their id slot
-      this.#items[id - 1] = item;
+      this.#items[id] = item;
     }
 
     this.#ctime = Date.now();
@@ -73,7 +72,7 @@ class Items {
 
   // returns an item by uuid
   async find_uuid(uuid) {
-    const match = this.#items.find(item => item?.uuid == uuid);
+    const match = this.#items.find(item => item.uuid == uuid);
     if (match) return match;
 
     // searches may need to fallback to serverside
@@ -124,5 +123,6 @@ class Items {
     // probably trigger some sort of refresh, but that's front(er) end stuff
     // for now just:
     this.#items = [];
+    this.#update_cache();
   }
 }
