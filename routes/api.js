@@ -1,5 +1,5 @@
 const { auth, add } = require("../lib/users");
-const { get_data_from_disk, get_range, get_uuid, remove } = require("../lib/userdata");
+const { get_data_from_disk, get_range, get_recursive, get_by_uuid, create, modify, remove } = require("../lib/items");
 const auth_middleware = require("../lib/auth");
 const router = require('express').Router();
 
@@ -17,9 +17,9 @@ router.post("/login", async (req, res) => {
     req.session.user = checked_user;
 
     // lack of error handling is stinky, also ram bloat
-    req.session.user.data = await get_data_from_disk(checked_user.uuid);
+    req.session.user.items = await get_data_from_disk(checked_user.uuid);
 
-    res.status(200).json({ message: 'logged in' });
+    res.status(200).json({ message: 'logged in', ctime: checked_user.ctime });
   } else {
     res.status(400).json({ message: 'username or password incorrect' });
   }
@@ -30,7 +30,7 @@ router.post("/signup", async (req, res) => {
   if (new_user) {
     req.session.user = new_user;
 
-    req.session.user.data = await get_data_from_disk(new_user.uuid); // unneeded but honestly just a sanity check
+    req.session.user.items = await get_data_from_disk(new_user.uuid); // unneeded but honestly just a sanity check
 
     res.status(200).json({ message: 'signed up' });
 
@@ -48,35 +48,53 @@ router.get("/data/all", auth_middleware, (req, res) => {
   // this wouldn't work with that, deal with it when i implement that
   // does that make this not futere proof
   // and ssssstinky?
-  res.status(200).json({ data: req.session.user.data });
+  res.status(200).json({ data: req.session.user.items });
 });
 
-// still think GET should be used for this but i don't write rfcs
-router.post("/data/range", auth_middleware, (req, res) => {
-  const range = get_range(req.session.user, req.body.start, req.body.end)
+router.get("/data/range", auth_middleware, (req, res) => {
+  const range = get_range(req.session.user, req.query.first, req.query.last)
   if (range) {
-    res.status(200).json({ range });
+    res.status(200).json(range);
   } else {
     res.status(400).json({ message: 'range empty'});
   }
 })
 
-router.post("/data/uuid", auth_middleware, (req, res) => {
-  const item = get_uuid(req.session.user, req.body.uuid)
-  if (item) {
-    res.status(200).json({ item });
+router.get("/data/recursive", auth_middleware, (req, res) => {
+  const bundle = get_recursive(req.session.user, req.query.id, req.query.depth)
+  if (bundle) {
+    res.status(200).json(bundle);
   } else {
     res.status(400).json({ message: 'item not found'});
   }
 })
 
-router.put("/data/add", auth_middleware, (req, res) => {
+router.get("/data/uuid/:uuid", auth_middleware, (req, res) => {
+  const item = get_by_uuid(req.session.user, req.params.uuid)
+  if (item) {
+    res.status(200).json(item);
+  } else {
+    res.status(400).json({ message: 'item not found'});
+  }
 })
 
-router.delete("/data/uuid", auth_middleware, (req, res) => {
-  const id = get_uuid(req.session.user, req.body.uuid).id
+router.post("/data/create", auth_middleware, (req, res) => {
+  create(req.session.user, req.body.fields);
+  res.status(200);
+})
+
+router.put("/data/modify", auth_middleware, (req, res) => {
+  const item = modify(req.session.user, req.body.id, req.body.fields)
+  res.status(200).json(item);
+})
+
+router.delete("/data/uuid/:uuid", auth_middleware, (req, res) => {
+  const id = get_by_uuid(req.session.user, req.params.uuid).id
   if (id) {
     remove(req.session.user, id)
+    res.status(200);
+  } else {
+    res.status(400).json({ message: 'i don\'t know|i\'m bald|some other infinitely nuanced error'});
   }
 })
 
