@@ -19,8 +19,8 @@ export class DoteViewmodeSelector extends LitElement {
     // TODO: implement setting for choosing what viewmodes display and which is default
     // for now, doing it manually
     this._viewmodeList = [
-      { displayName: "DEBUG" },
-      { displayName: "OVERVIEW" }
+      { displayName: "DEBUG", elementName: "dote-viewmode-debug" },
+      { displayName: "OVERVIEW", elementName: "dote-viewmode-overview" }
     ]
 
     // set to default viewmode
@@ -29,6 +29,18 @@ export class DoteViewmodeSelector extends LitElement {
 
   // render and helper functions ==============
   render() {
+    let currentViewmodeElement;
+    switch (this.currentViewmode) {
+        case "DEBUG":
+          currentViewmodeElement = html`<dote-viewmode-debug></dote-viewmode-debug>`;
+          break;
+        case "OVERVIEW":
+          currentViewmodeElement = html`<dote-viewmode-overview></dote-viewmode-overview>`;
+          break;
+        default:
+          currentViewmodeElement = html`<dote-viewmode-overview></dote-viewmode-overview>`;
+      }
+    
     return html`
       <nav>
         <ul class="dote-viewmode-selector-list">
@@ -45,6 +57,10 @@ export class DoteViewmodeSelector extends LitElement {
           }
         </ul>
       </nav>
+      <hr>
+      <section class="dote-viewmode-container">
+        ${currentViewmodeElement}
+      </section>
     `
   }
 
