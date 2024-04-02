@@ -2,7 +2,7 @@ import {LitElement, css, html} from 'lit';
 
 export class DoteViewmodeDebug extends LitElement {
   static properties = {
-    rawJSONUserData: {type: String}
+    rawJSONUserData: {type: String},
   };
 
   constructor() {
@@ -14,7 +14,7 @@ export class DoteViewmodeDebug extends LitElement {
       <section>
         <p class="dote-viewmode-debug">${this.rawJSONUserData}</p>
       </section>
-    `
+    `;
   }
 
   // styling =================================

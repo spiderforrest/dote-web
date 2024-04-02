@@ -1,16 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html>
   <head>
     <meta charset="utf-8" />
     <title>&lt;my-element> Demo</title>
-    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <script src="../node_modules/lit/polyfill-support.js"></script>
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.8.0/webcomponents-bundle.js"></script>
+    <script src="https://unpkg.com/lit@3.1.2/polyfill-support.js"></script>
 
     <!-- import elements to test here -->
-    <script type="module" src="../my-element.js"></script>
-    <script type="module" src="../components/dote-sidebar-menu.js"></script>
-    <script type="module" src="../components/dote-viewmode-selector.js"></script>
+    <script type="module" src="my-element.js"></script>
+    <script type="module" src="components/dote-sidebar-menu.js"></script>
+    <script type="module" src="components/dote-viewmode-selector.js"></script>
     <style>
       p {
         border: solid 1px blue;
@@ -23,9 +23,9 @@
     <my-element>
       <p>This is child content</p>
     </my-element>
-    <hr>
+    <hr />
     <dote-sidebar-menu></dote-sidebar-menu>
-    <hr>
+    <hr />
     <dote-viewmode-selector></dote-viewmode-selector>
   </body>
 </html>
