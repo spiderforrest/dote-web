@@ -6,9 +6,10 @@ import {DoteViewmodeDebug} from './viewmodes/dote-viewmode-debug.js';
 
 export class DoteViewmodeSelector extends LitElement {
 
-  // properties and constructor
+  // properties and constructor ======================
   static properties = {
     currentViewmode: {type: String},
+    userData: {},
     _viewmodeList: {state: true},
     _viewmodeDisplayNameList: {state: true}
   };
@@ -27,7 +28,7 @@ export class DoteViewmodeSelector extends LitElement {
     this.currentViewmode = "DEBUG";
   }
 
-  // render and helper functions ==============
+  // render and helper functions ======================
   render() {
     let currentViewmodeElement;
     switch (this.currentViewmode) {
