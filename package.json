@@ -2,7 +2,12 @@
   "name": "dote-serv",
   "version": "1.0.0",
   "license": "AGPLv3",
-  "scripts": {},
+  "scripts": {
+    "start": "node server.js",
+    "build": "cd client && npm run build",
+    "dev": "npm run build && npm run start"
+  },
+
   "main": "server.js",
   "dependencies": {
     "bcrypt": "^5.1.1",

@@ -23,14 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(api_routes);
 
-if (process.env.NODE_ENV === 'prod') {
-  app.use(express.static('public'));
-  app.use(express.static('client/dist'));
-} else {
-  app.use(express.static('public'));
-  app.use(express.static('client/src'));
-  app.use(express.static('client/node_modules/lit'));
-}
+app.use(express.static('public'));
+app.use(express.static('client/dist'));
 
 
 
