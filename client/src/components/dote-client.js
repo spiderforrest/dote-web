@@ -1,7 +1,7 @@
 import {LitElement, css, html} from 'lit';
 import {ContextProvider} from '@lit/context';
 
-import {userContextObject} from './context/dote-context-objects.js';
+import {userContextKey} from './context/dote-context-objects.js';
 import {DoteSidebarMenu} from './dote-sidebar-menu.js';
 
 export class DoteClient extends LitElement {
@@ -12,7 +12,7 @@ export class DoteClient extends LitElement {
 
   constructor() {
     super();
-    this._provider = new ContextProvider(this, {userContextObject});
+    this._provider = new ContextProvider(this, {userContextKey});
     this.userContext = "stonk";
   }
 

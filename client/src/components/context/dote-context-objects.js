@@ -1,3 +1,3 @@
 import {createContext} from '@lit/context';
 
-export const userContextObject = createContext(Symbol('user-context'));
+export const userContextKey = createContext(Symbol('user-context'));
