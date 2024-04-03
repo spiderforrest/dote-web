@@ -1,11 +1,21 @@
 import {LitElement, css, html} from 'lit';
 import {map} from 'lit/directives/map.js';
 import {classMap} from 'lit/directives/class-map.js';
+import {ContextConsumer} from '@lit/context';
+import {userContextKey} from './context/dote-context-objects.js';
 
 import {DoteViewmodeDebug} from './viewmodes/dote-viewmode-debug.js';
 
 export class DoteViewmodeSelector extends LitElement {
-  // properties and constructor ======================
+  // properties, constructor, context consumer ======================
+  _userDataConsumer = new ContextConsumer(this, {
+    context: userContextKey
+  });
+
+  get userContext() {
+    return this._userDataConsumer.value;
+  }
+
   static properties = {
     currentViewmode: {type: String},
     userData: {},

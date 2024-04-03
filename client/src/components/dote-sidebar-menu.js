@@ -1,13 +1,6 @@
 import {LitElement, css, html} from 'lit';
-import {ContextConsumer} from '@lit/context';
-import {userContextObject} from './context/dote-context-objects.js';
 
 export class DoteSidebarMenu extends LitElement {
-  _consumer = new ContextConsumer(this, {userContextObject});
-
-  get providedData() {
-    return this._consumer.value;
-  }
 
   static properties = {
     // whether the sidebar menu is open or not
@@ -19,7 +12,6 @@ export class DoteSidebarMenu extends LitElement {
     super();
     // menu defaults to closed on initial load
     this._menuOpen = false;
-    console.log(userContextObject);
   }
 
   render() {
