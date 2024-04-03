@@ -20,9 +20,18 @@ app.use(session({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
-
 
 app.use(api_routes);
+
+if (process.env.NODE_ENV === 'prod') {
+  app.use(express.static('public'));
+  app.use(express.static('client/dist'));
+} else {
+  app.use(express.static('public'));
+  app.use(express.static('client/src'));
+  app.use(express.static('client/node_modules/lit'));
+}
+
+
 
 app.listen(3000);
