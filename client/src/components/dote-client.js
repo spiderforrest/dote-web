@@ -22,7 +22,7 @@ export class DoteClient extends LitElement {
 
 
   render() {
-    if (this.userData.username === "") {
+    if (this.userData.username === undefined) {
       return html`<dote-auth></dote-auth>`;
     } else {
     return html`

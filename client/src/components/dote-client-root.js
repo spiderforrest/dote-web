@@ -13,7 +13,7 @@ export class DoteClientRoot extends LitElement {
   // user data context lives here
   _userDataProvider = new ContextProvider(this, {
     context: userContextKey,
-    initialValue: { username: "", userUuid: "" }
+    initialValue: { username: undefined, userUuid: undefined }
   });
 
   set userContext(value) {
@@ -33,7 +33,8 @@ export class DoteClientRoot extends LitElement {
   }
 
   _loginListener(e) {
-    console.log(e);
+    // pull username and UUID from successful login, set in context
+    this.userContext = e.detail;
   }
 }
 
