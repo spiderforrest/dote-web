@@ -1,28 +1,20 @@
 import {LitElement, css, html} from 'lit';
-import {ContextProvider} from '@lit/context';
+import {ContextProvider, ContextConsumer} from '@lit/context';
 
 import {userContextKey} from './context/dote-context-objects.js';
 import {DoteSidebarMenu} from './dote-sidebar-menu.js';
 import {DoteViewmodeSelector} from './dote-viewmode-selector.js';
+import {DoteAuth} from './dote-auth.js';
 
 export class DoteClient extends LitElement {
-  _userDataProvider = new ContextProvider(this, {
+
+  _userDataConsumer = new ContextConsumer(this, {
     context: userContextKey,
-    initialValue: "stonks"
-  });
+    subscribe: true});
 
-  set userContext(value) {
-    this._userContext = value;
-    this._userDataProvider.setValue(value);
+  get userData() {
+    return this._userDataConsumer.value;
   }
-
-  get userContext() {
-    return this._userContext;
-  }
-
-  static properties = {
-    userContext: {}
-  };
 
   constructor() {
     super();
@@ -30,11 +22,14 @@ export class DoteClient extends LitElement {
 
 
   render() {
-    console.log(this.userContext);
+    if (this.userData.username === "") {
+      return html`<dote-auth></dote-auth>`;
+    } else {
     return html`
       <dote-sidebar-menu></dote-sidebar-menu>
       <dote-viewmode-selector></dote-viewmode-selector>
       `;
+    }
   }
 }
 

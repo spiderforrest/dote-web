@@ -10,9 +10,9 @@ import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 
 export default {
-  input: 'src/components/dote-client.js',
+  input: 'src/components/dote-client-root.js',
   output: {
-    file: 'dist/dote-client.js',
+    file: 'dist/dote-client-root.js',
     format: 'esm',
   },
   onwarn(warning) {
