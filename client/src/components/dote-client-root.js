@@ -10,10 +10,10 @@ export class DoteClientRoot extends LitElement {
     userContext: {}
   };
   
-  // all context lives here
+  // user data context lives here
   _userDataProvider = new ContextProvider(this, {
     context: userContextKey,
-    initialValue: { username: "" }
+    initialValue: { username: "", userUuid: "" }
   });
 
   set userContext(value) {
@@ -25,10 +25,15 @@ export class DoteClientRoot extends LitElement {
     return this._userContext;
   }
 
+  // render and event listeners =====================
   render() {
     return html`
-      <dote-client></dote-client>
+      <dote-client @userLogin=${this._loginListener}></dote-client>
     `;
+  }
+
+  _loginListener(e) {
+    console.log(e);
   }
 }
 
