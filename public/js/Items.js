@@ -59,6 +59,20 @@ class Items {
     return this.#items;
   }
 
+  // takes id
+  // gives item
+  async get_item(id) {
+    if (this.#items[id]) return this.#items[id];
+    const res = await fetch(`/api/data/range?id=${id}&depth=0`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+    const item = await res.json()[0]
+    if (item) this.#update_cache(item);
+    return item;
+  }
+
   // takes a start and end id (inclusive) of items and gets every id in between
   // returns the matched array
   async fetch_range(first, last) {
