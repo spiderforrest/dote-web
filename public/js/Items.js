@@ -43,10 +43,19 @@ class Items {
     window.localStorage.setItem("dote-ctime", this.#ctime)
   }
 
+
+  // Returns the current cached items list
+  // A sparse array, with items at their id-so nothing ever at 0
+  // NOTE: EVERY single other function that fetches an item will update this cache.
+  // So, for instance: the fetch_recursive() function returns a disorganized array; if you want it
+  // sorted so the items are at the correct address in the array, simply discard the output of the
+  // fetch_recursive() call and call get_cache()
   get_cache() {
     return this.#items;
   }
-  // first/last is the id, not the index, of the first item in the range
+
+  // takes a start and end id (inclusive) of items and gets every id in between
+  // returns the matched array
   async fetch_range(first, last) {
     const res = await fetch(`/api/data/range?first=${first}&last=${last}`, {
       method: 'GET',
@@ -58,7 +67,8 @@ class Items {
     return range;
   }
 
-
+  // takes an id and a depth to recurse on
+  // returns an out of order array containing all the matched items
   async fetch_recursive(id, depth) {
     const res = await fetch(`/api/data/range?id=${id}&depth=${depth}`, {
       method: 'GET',
@@ -86,7 +96,8 @@ class Items {
     return item;
   }
 
-  // creates an item
+  // takes an object containing the fields and values to give the new item (ids and such are generated serverside)
+  // returns the created item, with those fields
   async create(fields) {
     const res = await fetch(`/api/data/create/`, {
       method: 'POST',
@@ -99,7 +110,8 @@ class Items {
     return item;
   }
 
-  // takes an item's id and an object with k:v pairs for field:value to overwrite the items fields
+  // takes an id, and an object containing the fields and values to reassign the item
+  // returns the modified item
   async modify(id, fields) {
     const res = await fetch(`/api/data/modify/`, {
       method: 'POST',
@@ -112,7 +124,7 @@ class Items {
     return item;
   }
 
-  // completely deletes an item, by uuid for safety
+  // takes a uuid(for safety) and completely deletes the item
   async delete_item(uuid) {
     await fetch(`/api/data/uuid/${uuid}`, {
       method: 'DELETE',
