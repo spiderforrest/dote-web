@@ -4,6 +4,11 @@ class Items {
   // which needs to be called by any functions that get more data from the server.
   #items;
   #ctime;
+
+
+  // to use, create an instance of the array on page load. It will handle browser caching and such.
+  // the argument is the 'ctime' returned by the login/signup api call, and it's fine without it, but
+  // that controls if the cache is refreshed.
   constructor(remote_ctime) {
     const ctime = window.localStorage.getItem("dote-ctime") || 0;
     let cache = [];
