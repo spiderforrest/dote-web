@@ -63,6 +63,7 @@ export class Items {
 
   // takes id
   // gives item
+  // NOTE: the first item in a user's list is at index 1, not 0
   async get_item(id) {
     if (this.#items[id]) return this.#items[id];
     const res = await fetch(`/api/data/range?id=${id}&depth=0`, {
@@ -77,6 +78,7 @@ export class Items {
 
   // takes a start and end id (inclusive) of items and gets every id in between
   // returns the matched array
+  // NOTE: the first item in a user's list is at index 1, not 0
   async fetch_range(first, last) {
     const res = await fetch(`/api/data/range?first=${first}&last=${last}`, {
       method: 'GET',

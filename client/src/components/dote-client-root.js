@@ -45,7 +45,9 @@ export class DoteClientRoot extends LitElement {
                         userItems: userItemList}
 
     // then update from server
-    
+    // TODO: update to use `fetch_all` call once that's written
+    this.userContext.userItems.fetch_range(1, 1000);
+    console.log(this.userContext.userItems.get_cache());
   }
 }
 
