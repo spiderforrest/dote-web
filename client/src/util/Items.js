@@ -1,3 +1,5 @@
+/* TODO for spood: write get_all_root() func for retrieving a user's full items list (for first login on new device, for instance) */
+
 export class Items {
   // the client copy of the items array is stored as this.#items-as requests get made, it's populated
   // _sparsely_ with any data its gotten sent over. This is all done in the update_cache() function,
