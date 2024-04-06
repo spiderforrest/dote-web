@@ -99,6 +99,17 @@ class Items {
     return bundle;
   }
 
+  async fetch_root() {
+    const res = await fetch(`/api/data/root`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+    const bundle = await res.json()
+    if (bundle) this.#update_cache(bundle);
+    return bundle;
+  }
+
   // returns an item by uuid
   async find_uuid(uuid) {
     const match = this.#items.find(item => item.uuid == uuid);

@@ -69,6 +69,15 @@ router.get("/data/recursive", auth_middleware, (req, res) => {
   }
 })
 
+router.get("/data/root", auth_middleware, (req, res) => {
+  const bundle = get_root(req.session.user)
+  if (bundle) {
+    res.status(200).json(bundle);
+  } else {
+    res.status(400).json({ message: 'no matches'});
+  }
+})
+
 router.get("/data/uuid/:uuid", auth_middleware, (req, res) => {
   const item = get_by_uuid(req.session.user, req.params.uuid)
   if (item) {
