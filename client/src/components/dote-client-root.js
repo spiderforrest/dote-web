@@ -39,10 +39,13 @@ export class DoteClientRoot extends LitElement {
 
   _loginListener(e) {
     // pull username and UUID from successful login, set in context
-    this.userContext = e.detail;
+    const userItemList = new Items(e.detail.ctime)
+    this.userContext = {username: e.detail.username,
+                        userUuid: e.detail.userUuid,
+                        userItems: userItemList}
 
-    // then pull user data from server and store it in context
-    //
+    // then update from server
+    
   }
 }
 
