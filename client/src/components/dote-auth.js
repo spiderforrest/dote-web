@@ -61,7 +61,7 @@ export class DoteAuth extends LitElement {
       // this logs user in
     }).then((res) => res.json()).then((res) => {
       if (res.username !== undefined || res.userUuid !== undefined) {
-        const serverData = {username: res.username, userUuid: res.uuid};
+        const serverData = {username: res.username, userUuid: res.uuid, serverCtime: res.ctime};
         const options = {
           detail: serverData,
           bubbles: true,
@@ -92,7 +92,7 @@ export class DoteAuth extends LitElement {
       // if success, package data returned from server and dispatch it up to dote-client-root
     }).then((res) => res.json()).then((res) => {
       if (res.username !== undefined || res.userUuid !== undefined) {
-        const serverData = {username: res.username, userUuid: res.uuid};
+        const serverData = {username: res.username, userUuid: res.uuid, serverCtime: res.ctime};
         const options = {
           detail: serverData,
           bubbles: true,
