@@ -10,6 +10,7 @@ export class DoteAuth extends LitElement {
     super();
     // default to login
     this._currentMode = "login";
+    this._errorMessage = "";
   }
 
   render() {
@@ -21,10 +22,10 @@ export class DoteAuth extends LitElement {
           <input id="username-entry" name="username-input" type="text" required />
           <label for="password-input">password: </label>
           <input id="password-entry" name="password-input" type="password" required />
-          <button id="login-button" @click="${this._submitLogin}" type="submit">login</button>
+          <button id="login-button" type="submit">login</button>
         </form>
         <a @click="${() => this._currentMode = "signup"}">sign up instead?</a>
-        <p id="auth-error-message"></p>
+        <p id="auth-error-message">${this._errorMessage}</p>
       `;
     } else {
       return html`
@@ -34,10 +35,10 @@ export class DoteAuth extends LitElement {
           <input id="username-entry" name="username-input" type="text" required />
           <label for="password-input">password: </label>
           <input id="password-entry" name="password-input" type="password" required />
-          <button id="signup-button" @click="${this._submitSignup}" type="submit">signup</button>
+          <button id="signup-button" type="submit">signup</button>
         </form>
         <a @click="${() => this._currentMode = "login"}">log in instead?</a>
-        <p id="auth-error-message"></p>
+        <p id="auth-error-message">${this._errorMessage}</p>
       `;
     };
   }
@@ -67,6 +68,8 @@ export class DoteAuth extends LitElement {
           composed: true
         };
         this.dispatchEvent(new CustomEvent('userLogin', options));
+      } else {
+        this._errorMessage = "Error during login: " + res.message;
       }
     });
   }
@@ -75,7 +78,8 @@ export class DoteAuth extends LitElement {
     // prevent page refresh
     e.preventDefault();
     
-    // sign up with server
+    // fetch entered data and sign up with server
+    // if successful, this also logs newly created user in
     fetch('/api/signup', {
       method: 'POST',
       headers: {
@@ -95,6 +99,10 @@ export class DoteAuth extends LitElement {
           composed: true
         };
         this.dispatchEvent(new CustomEvent('userLogin', options));
+      } else {
+        // otherwise, if signup fails, display error message
+        // TODO: add error message from server here once login/signup funcs fixed serverside
+        this._errorMessage = "Error during signup: ";
       }
     });
   }
