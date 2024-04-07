@@ -1,4 +1,4 @@
-class Items {
+export class Items {
   // the client copy of the items array is stored as this.#items-as requests get made, it's populated
   // _sparsely_ with any data its gotten sent over. This is all done in the update_cache() function,
   // which needs to be called by any functions that get more data from the server.
@@ -166,5 +166,3 @@ class Items {
     this.#update_cache();
   }
 }
-
-module.exports = Items;
