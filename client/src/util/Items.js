@@ -1,6 +1,4 @@
-/* TODO for spood: write get_all_root() func for retrieving a user's full items list (for first login on new device, for instance) */
-
-export class Items {
+class Items {
   // the client copy of the items array is stored as this.#items-as requests get made, it's populated
   // _sparsely_ with any data its gotten sent over. This is all done in the update_cache() function,
   // which needs to be called by any functions that get more data from the server.
@@ -63,7 +61,6 @@ export class Items {
 
   // takes id
   // gives item
-  // NOTE: the first item in a user's list is at index 1, not 0
   async get_item(id) {
     if (this.#items[id]) return this.#items[id];
     const res = await fetch(`/api/data/range?id=${id}&depth=0`, {
@@ -78,7 +75,6 @@ export class Items {
 
   // takes a start and end id (inclusive) of items and gets every id in between
   // returns the matched array
-  // NOTE: the first item in a user's list is at index 1, not 0
   async fetch_range(first, last) {
     const res = await fetch(`/api/data/range?first=${first}&last=${last}`, {
       method: 'GET',
@@ -94,6 +90,17 @@ export class Items {
   // returns an out of order array containing all the matched items
   async fetch_recursive(id, depth) {
     const res = await fetch(`/api/data/range?id=${id}&depth=${depth}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+    const bundle = await res.json()
+    if (bundle) this.#update_cache(bundle);
+    return bundle;
+  }
+
+  async fetch_root() {
+    const res = await fetch(`/api/data/root`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     })
