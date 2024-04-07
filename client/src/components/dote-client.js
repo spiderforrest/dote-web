@@ -7,10 +7,10 @@ import {DoteViewmodeSelector} from './dote-viewmode-selector.js';
 import {DoteAuth} from './dote-auth.js';
 
 export class DoteClient extends LitElement {
-
   _userDataConsumer = new ContextConsumer(this, {
     context: userContextKey,
-    subscribe: true});
+    subscribe: true,
+  });
 
   get userData() {
     return this._userDataConsumer.value;
@@ -20,14 +20,13 @@ export class DoteClient extends LitElement {
     super();
   }
 
-
   render() {
-    if (this.userData.username === undefined) {
+    if (this.userData.userLoggedIn === false) {
       return html`<dote-auth></dote-auth>`;
     } else {
-    return html`
-      <dote-sidebar-menu></dote-sidebar-menu>
-      <dote-viewmode-selector></dote-viewmode-selector>
+      return html`
+        <dote-sidebar-menu></dote-sidebar-menu>
+        <dote-viewmode-selector></dote-viewmode-selector>
       `;
     }
   }

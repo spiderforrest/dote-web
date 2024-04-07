@@ -11,20 +11,20 @@ export class DoteViewmodeDebug extends LitElement {
     return this._userDataContext.value;
   }
 
-  static properties = {
-    rawJSONUserData: {type: String},
-  };
-
   constructor() {
     super();
   }
 
   render() {
+    // fetch everything from server
+    // this.userData.userItems.fetch_range(1, 1000);
     return html`
       <section>
-        <p class="dote-viewmode-debug">${this.rawJSONUserData}</p>
+        <ul>
+          ${this.userData.userItems.get_cache().map( (item) => html`<li>${JSON.stringify(item)}</li>` )}
+        </ul>
 
-        <button @click="${() => console.log(this.userData)}">boot</button>
+        <button @click="${() => console.log(this.userData.userItems.get_cache())}">boot</button>
       </section>
     `;
   }
