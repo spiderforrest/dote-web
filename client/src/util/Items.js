@@ -5,38 +5,37 @@ class Items {
   #items;
   #ctime;
 
-
   // to use, create an instance of the array on page load. It will handle browser caching and such.
   // the argument is the 'ctime' returned by the login/signup api call, and it's fine without it, but
   // that controls if the cache is refreshed.
   constructor(remote_ctime) {
-    const ctime = window.localStorage.getItem("dote-ctime") || 0;
+    const ctime = window.localStorage.getItem('dote-ctime') || 0;
     let cache = [];
     try {
-      cache = JSON.parse(window.localStorage.getItem("dote-items"));
+      cache = JSON.parse(window.localStorage.getItem('dote-items'));
     } catch {
       // fix it
-      window.localStorage.setItem("dote-items", JSON.stringify([]));
+      window.localStorage.setItem('dote-items', JSON.stringify([]));
     }
 
     // check if the cache is safe to trust as correct (no other clients modified data)
     // like, if the ctimes are within 15s of each other
-    if (15000/*ms*/ > Math.abs(ctime - remote_ctime)) {
+    if (15000 /*ms*/ > Math.abs(ctime - remote_ctime)) {
       this.#items = cache;
       this.#ctime = ctime;
     } else {
       // zero it all
       this.#items = [];
       this.#ctime = Date.now();
-      window.localStorage.setItem("dote-items", JSON.stringify(this.#items));
-      window.localStorage.setItem("dote-ctime", this.#ctime);
+      window.localStorage.setItem('dote-items', JSON.stringify(this.#items));
+      window.localStorage.setItem('dote-ctime', this.#ctime);
     }
   }
 
   // updates the internal cache and local storage with new items
   #update_cache(new_list) {
     // go over each of the new items
-    for(const item of new_list) {
+    for (const item of new_list) {
       const id = item.id;
       // assign them DIRECTLY to the cache array in their id slot
       this.#items[id] = item;
@@ -44,10 +43,9 @@ class Items {
 
     this.#ctime = Date.now();
     // cache in browser storage
-    window.localStorage.setItem("dote-items", JSON.stringify(this.#items));
-    window.localStorage.setItem("dote-ctime", this.#ctime)
+    window.localStorage.setItem('dote-items', JSON.stringify(this.#items));
+    window.localStorage.setItem('dote-ctime', this.#ctime);
   }
-
 
   // Returns the current cached items list
   // A sparse array, with items at their id-so nothing ever at 0
@@ -65,10 +63,10 @@ class Items {
     if (this.#items[id]) return this.#items[id];
     const res = await fetch(`/api/data/range?id=${id}&depth=0`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
+      headers: {'Content-Type': 'application/json'},
+    });
 
-    const item = await res.json()[0]
+    const item = await res.json()[0];
     if (item) this.#update_cache(item);
     return item;
   }
@@ -78,10 +76,10 @@ class Items {
   async fetch_range(first, last) {
     const res = await fetch(`/api/data/range?first=${first}&last=${last}`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
+      headers: {'Content-Type': 'application/json'},
+    });
 
-    const range = await res.json()
+    const range = await res.json();
     if (range) this.#update_cache(range); // no overwrite bad resp
     return range;
   }
@@ -91,10 +89,10 @@ class Items {
   async fetch_recursive(id, depth) {
     const res = await fetch(`/api/data/range?id=${id}&depth=${depth}`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
+      headers: {'Content-Type': 'application/json'},
+    });
 
-    const bundle = await res.json()
+    const bundle = await res.json();
     if (bundle) this.#update_cache(bundle);
     return bundle;
   }
@@ -102,24 +100,24 @@ class Items {
   async fetch_root() {
     const res = await fetch(`/api/data/root`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
+      headers: {'Content-Type': 'application/json'},
+    });
 
-    const bundle = await res.json()
+    const bundle = await res.json();
     if (bundle) this.#update_cache(bundle);
     return bundle;
   }
 
   // returns an item by uuid
   async find_uuid(uuid) {
-    const match = this.#items.find(item => item.uuid == uuid);
+    const match = this.#items.find((item) => item.uuid == uuid);
     if (match) return match;
 
     // searches may need to fallback to serverside
     const res = await fetch(`/api/data/uuid/${uuid}`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
+      headers: {'Content-Type': 'application/json'},
+    });
     const item = await res.json();
 
     if (item) this.#update_cache([item]);
@@ -131,10 +129,10 @@ class Items {
   async create(fields) {
     const res = await fetch(`/api/data/create/`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: { fields }
-    })
-    const item = await res.json()
+      headers: {'Content-Type': 'application/json'},
+      body: {fields},
+    });
+    const item = await res.json();
 
     if (item) this.#update_cache([item]);
     return item;
@@ -145,10 +143,10 @@ class Items {
   async modify(id, fields) {
     const res = await fetch(`/api/data/modify/`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: { id, fields }
-    })
-    const item = await res.json()
+      headers: {'Content-Type': 'application/json'},
+      body: {id, fields},
+    });
+    const item = await res.json();
 
     if (item) this.#update_cache([item]);
     return item;
@@ -158,8 +156,8 @@ class Items {
   async delete_item(uuid) {
     await fetch(`/api/data/uuid/${uuid}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-    })
+      headers: {'Content-Type': 'application/json'},
+    });
 
     // we need to totally reset the cache here bc the ids will alll get shuffled
     // probably trigger some sort of refresh, but that's front(er) end stuff
@@ -168,3 +166,5 @@ class Items {
     this.#update_cache();
   }
 }
+
+module.exports = Items;
