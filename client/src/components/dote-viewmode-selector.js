@@ -34,7 +34,7 @@ export class DoteViewmodeSelector extends LitElement {
     ];
 
     // set to default viewmode
-    this.currentViewmode = 'DEBUG';
+    this.currentViewmode = 'NONE';
   }
 
   // render and helper functions ======================
@@ -48,7 +48,7 @@ export class DoteViewmodeSelector extends LitElement {
         currentViewmodeElement = html`<dote-viewmode-overview></dote-viewmode-overview>`;
         break;
       default:
-        currentViewmodeElement = html`<dote-viewmode-overview></dote-viewmode-overview>`;
+        currentViewmodeElement = html`<p><i>Select a viewmode.</i></p>`;
     }
 
     return html`

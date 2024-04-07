@@ -11,22 +11,27 @@ export class DoteViewmodeDebug extends LitElement {
     return this._userDataContext.value;
   }
 
+  // TODO: add loading state to delay render until data is pulled from server
+
   constructor() {
     super();
   }
 
   render() {
-    // fetch everything from server
-    // this.userData.userItems.fetch_range(1, 1000);
-    return html`
-      <section>
-        <ul>
-          ${this.userData.userItems.get_cache().map( (item) => html`<li>${JSON.stringify(item)}</li>` )}
-        </ul>
-
-        <button @click="${() => console.log(this.userData.userItems.get_cache())}">boot</button>
-      </section>
-    `;
+    const itemList = this.userData.userItems.get_cache();
+    if (itemList.length === 0)
+      return html`<p><i>No items.</i></p>`;
+    else {
+      return html`
+        <section>
+          <ul>
+            ${itemList.map( (item) => html`<li>${JSON.stringify(item)}</li>` )}
+          </ul>
+          
+          <button @click="${() => console.log(this.userData.userItems.get_cache())}">could you put it in the console instead please</button>
+        </section>
+      `;
+    }
   }
 
   // styling =================================
