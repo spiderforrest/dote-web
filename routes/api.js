@@ -89,8 +89,8 @@ router.get("/data/uuid/:uuid", auth_middleware, (req, res) => {
 
 router.post("/data/create", auth_middleware, (req, res) => {
   try {
-  const item = create(req.session.user, req.body.fields);
-  res.status(200).json(item);
+    const item = create(req.session.user, req.body.fields);
+    res.status(200).json(item || []);
   } catch {
     res.status(400).json({ message: 'internal server error'});
   }
@@ -98,8 +98,8 @@ router.post("/data/create", auth_middleware, (req, res) => {
 
 router.put("/data/modify", auth_middleware, (req, res) => {
   try {
-  const item = modify(req.session.user, req.body.id, req.body.fields)
-  res.status(200).json(item);
+    const item = modify(req.session.user, req.body.id, req.body.fields)
+    res.status(200).json(item || []);
   } catch {
     res.status(400).json({ message: 'internal server error'});
   }
