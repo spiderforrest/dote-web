@@ -63,7 +63,7 @@ router.get("/data/range", auth_middleware, (req, res) => {
 router.get("/data/recursive", auth_middleware, (req, res) => {
   try {
     const bundle = get_recursive(req.session.user, req.query.id, req.query.depth)
-    res.status(200).json(bundle);
+    res.status(200).json(bundle || []);
   } catch {
     res.status(400).json({ message: 'internal server error'});
   }
