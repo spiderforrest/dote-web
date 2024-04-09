@@ -52,49 +52,57 @@ router.get("/data/all", auth_middleware, (req, res) => {
 });
 
 router.get("/data/range", auth_middleware, (req, res) => {
-  const range = get_range(req.session.user, req.query.first, req.query.last)
-  if (range) {
-    res.status(200).json(range);
-  } else {
-    res.status(400).json({ message: 'range empty'});
+  try {
+    const range = get_range(req.session.user, req.query.first, req.query.last)
+    res.status(200).json(range || []);
+  } catch {
+    res.status(400).json({ message: 'internal server error'});
   }
 })
 
 router.get("/data/recursive", auth_middleware, (req, res) => {
-  const bundle = get_recursive(req.session.user, req.query.id, req.query.depth)
-  if (bundle) {
+  try {
+    const bundle = get_recursive(req.session.user, req.query.id, req.query.depth)
     res.status(200).json(bundle);
-  } else {
-    res.status(400).json({ message: 'item not found'});
+  } catch {
+    res.status(400).json({ message: 'internal server error'});
   }
 })
 
 router.get("/data/root", auth_middleware, (req, res) => {
-  const bundle = get_root(req.session.user)
-  if (bundle) {
-    res.status(200).json(bundle);
-  } else {
-    res.status(400).json({ message: 'no matches'});
+  try {
+    const bundle = get_root(req.session.user)
+    res.status(200).json(bundle || []);
+  } catch {
+    res.status(400).json({ message: 'internal server error'});
   }
 })
 
 router.get("/data/uuid/:uuid", auth_middleware, (req, res) => {
-  const item = get_by_uuid(req.session.user, req.params.uuid)
-  if (item) {
-    res.status(200).json(item);
-  } else {
-    res.status(400).json({ message: 'item not found'});
+  try {
+    const item = get_by_uuid(req.session.user, req.params.uuid)
+    res.status(200).json(item || []);
+  } catch {
+    res.status(400).json({ message: 'internal server error'});
   }
 })
 
 router.post("/data/create", auth_middleware, (req, res) => {
+  try {
   const item = create(req.session.user, req.body.fields);
   res.status(200).json(item);
+  } catch {
+    res.status(400).json({ message: 'internal server error'});
+  }
 })
 
 router.put("/data/modify", auth_middleware, (req, res) => {
+  try {
   const item = modify(req.session.user, req.body.id, req.body.fields)
   res.status(200).json(item);
+  } catch {
+    res.status(400).json({ message: 'internal server error'});
+  }
 })
 
 router.delete("/data/uuid/:uuid", auth_middleware, (req, res) => {
