@@ -79,6 +79,7 @@ export class Items {
       headers: {'Content-Type': 'application/json'},
     });
 
+    // SPOODO (spood TODO): update server code to return an empty array instead of an object w/message key if nothing matches query
     const range = await res.json();
     if (range) this.#update_cache(range); // no overwrite bad resp
     return range;

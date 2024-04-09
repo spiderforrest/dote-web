@@ -12,9 +12,13 @@ export class DoteViewmodeDebug extends LitElement {
   }
 
   // TODO: add loading state to delay render until data is pulled from server
+  static properties = {
+    _userDataLoaded: {state: true},
+  }
 
   constructor() {
     super();
+    this._userDataLoaded = false;
   }
 
   render() {
