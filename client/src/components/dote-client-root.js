@@ -44,10 +44,6 @@ export class DoteClientRoot extends LitElement {
                         userUuid: e.detail.userUuid,
                         userItems: userItemList}
     this.userContext = {...this.userContext, userLoggedIn: true}
-    // then update from server
-    // TODO: update to use `fetch_all` call once that's written
-    this.userContext.userItems.fetch_range(1, 1000);
-    console.log(this.userContext.userItems.get_cache());
   }
 }
 

@@ -7,29 +7,47 @@ import {Items} from '../../util/Items.js'
 export class DoteViewmodeDebug extends LitElement {
   _userDataContext = new ContextConsumer(this, {context: userContextKey, subscribe: true});
 
+  // NOTE: context not accessible in constructor--only after component mounts to DOM
   get userData() {
     return this._userDataContext.value;
   }
 
-  // TODO: add loading state to delay render until data is pulled from server
   static properties = {
-    _userDataLoaded: {state: true},
+    _userItemList: {state: true},
   }
 
   constructor() {
     super();
-    this._userDataLoaded = false;
+    this._userItemList = undefined;
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    // once connected to DOM and context is available, fetch first 1000 items
+    this.userData.userItems.fetch_range(0, 1000)
+      .then((result) => this._userItemList = result)
+      .catch((fail) => this._userItemList = "failure");
+  }
+
+
   render() {
-    const itemList = this.userData.userItems.get_cache();
-    if (itemList.length === 0)
+    // if results not yet available, display loading text
+    if (this._userItemList === undefined) {
+      return html`<p><i>fetching data...</i></p>`;
+    }
+
+    // if fetching data fails, display error
+    if (this._userItemList === "failure") {
+      return html`<p><b>Error: fetching data failed.</b></p>`;
+    }
+
+    if (this._userItemList.length === 0)
       return html`<p><i>No items.</i></p>`;
     else {
       return html`
         <section>
           <ul>
-            ${itemList.map( (item) => html`<li>${JSON.stringify(item)}</li>` )}
+            ${this._userItemList.map( (item) => html`<li>${JSON.stringify(item)}</li>` )}
           </ul>
           
           <button @click="${() => console.log(this.userData.userItems.get_cache())}">could you put it in the console instead please</button>
