@@ -62,6 +62,10 @@ export class DoteViewmodeDebug extends LitElement {
     p {
       border: thin double teal;
     }
+    
+    ul {
+      list-style: none
+    }
   `;
 }
 

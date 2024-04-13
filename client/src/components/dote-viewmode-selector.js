@@ -5,6 +5,7 @@ import {ContextConsumer} from '@lit/context';
 import {userContextKey} from './context/dote-context-objects.js';
 
 import {DoteViewmodeDebug} from './viewmodes/dote-viewmode-debug.js';
+import {DoteViewmodeOverview} from './viewmodes/dote-viewmode-overview.js';
 
 export class DoteViewmodeSelector extends LitElement {
   // properties, constructor, context consumer ======================
