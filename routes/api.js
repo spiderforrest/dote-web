@@ -96,7 +96,7 @@ router.get("/data/uuid/:uuid", auth_middleware, (req, res) => {
 // USE THE WRONG REQUEST TYPE. aaaaaaaaaa
 router.post("/data/query", auth_middleware, (req, res) => {
   try {
-    const matches = query_handler(req.session.user, req.body);
+    const matches = query_handler(req.session.user, req.body.queries);
     res.status(200).json(matches || []);
   } catch(err) {
     console.error(err);
