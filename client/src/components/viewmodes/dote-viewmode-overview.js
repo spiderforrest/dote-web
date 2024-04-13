@@ -56,7 +56,7 @@ export class DoteViewmodeOverview extends LitElement {
 
   static styles = css`
     p {
-      border: thin double teal;
+      border: thin double grey;
     }
   `;
 }
