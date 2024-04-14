@@ -28,6 +28,12 @@ export class DoteViewmodeOverviewItem extends LitElement {
       </section>
       `;
   }
+
+  static styles = css`
+    .dote-overview-itemcard {
+      border: solid red;
+    }
+  `;
 }
 
 customElements.define('dote-viewmode-overview-item', DoteViewmodeOverviewItem);
