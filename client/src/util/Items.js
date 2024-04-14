@@ -61,14 +61,14 @@ export class Items {
   // gives item
   async get_item(id) {
     if (this.#items[id]) return this.#items[id];
-    const res = await fetch(`/api/data/range?id=${id}&depth=0`, {
+    const res = await fetch(`/api/data/recursive?id=${id}&depth=1`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
     });
 
-    const item = await res.json()[0];
-    if (item) this.#update_cache(item);
-    return item;
+    const item = await res.json();
+    if (item[0]) this.#update_cache(item);
+    return item[0];
   }
 
   // takes a start and end id (inclusive) of items and gets every id in between
@@ -86,8 +86,9 @@ export class Items {
 
   // takes an id and a depth to recurse on
   // returns an out of order array containing all the matched items
+  // depth starts at 1; to return only the root item, use depth=1, for root+children, depth=2, and so on
   async fetch_recursive(id, depth) {
-    const res = await fetch(`/api/data/range?id=${id}&depth=${depth}`, {
+    const res = await fetch(`/api/data/recursive?id=${id}&depth=${depth}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
     });
