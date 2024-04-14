@@ -1,5 +1,5 @@
 const { auth, add } = require("../lib/users");
-const { get_data_from_disk, get_range, get_recursive, query_handler, get_by_uuid, create, modify, remove } = require("../lib/items");
+const { get_data_from_disk, get_range, get_recursive, get_root_items, query_handler, get_by_uuid, create, modify, remove } = require("../lib/items");
 const auth_middleware = require("../lib/auth");
 const router = require('express').Router();
 
@@ -73,7 +73,7 @@ router.get("/data/recursive", auth_middleware, (req, res) => {
 
 router.get("/data/root", auth_middleware, (req, res) => {
   try {
-    const bundle = get_root(req.session.user);
+    const bundle = get_root_items(req.session.user);
     res.status(200).json(bundle || []);
   } catch(err) {
     console.error(err);

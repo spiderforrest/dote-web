@@ -66,6 +66,10 @@ export class DoteViewmodeDebug extends LitElement {
     ul {
       list-style: none
     }
+
+    li {
+      font-family: monospace;
+    }
   `;
 }
 

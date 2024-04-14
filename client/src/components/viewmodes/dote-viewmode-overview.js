@@ -24,7 +24,7 @@ export class DoteViewmodeOverview extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     // once connected to DOM and context is available, fetch first 1000 items
-    this.userData.userItems.fetch_range(0, 1000)
+    this.userData.userItems.fetch_root()
       .then((result) => this._userItemList = result)
       .catch((fail) => this._userItemList = "failure");
   }
