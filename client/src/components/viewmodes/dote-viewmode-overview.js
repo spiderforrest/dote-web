@@ -3,6 +3,7 @@ import {ContextConsumer} from '@lit/context';
 
 import {userContextKey} from './../context/dote-context-objects.js';
 import {Items} from '../../util/Items.js'
+import {DoteViewmodeOverviewItem} from './dote-viewmode-overview-item.js';
 
 export class DoteViewmodeOverview extends LitElement {
   _userDataContext = new ContextConsumer(this, {context: userContextKey, subscribe: true});
@@ -23,8 +24,13 @@ export class DoteViewmodeOverview extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // once connected to DOM and context is available, fetch first 1000 items
-    this.userData.userItems.fetch_root()
+    // once connected to DOM and context is available, fetch root items
+    // currently commented out for testing purposes
+    // this.userData.userItems.fetch_root()
+    //   .then((result) => this._userItemList = result)
+    //   .catch((fail) => this._userItemList = "failure");
+
+    this.userData.userItems.get_item(1)
       .then((result) => this._userItemList = result)
       .catch((fail) => this._userItemList = "failure");
   }
@@ -46,7 +52,7 @@ export class DoteViewmodeOverview extends LitElement {
     else {
       return html`
         <section>
-          <p>this is where the items go</p>
+          <dote-viewmode-overview-item .itemData=${this._userItemList}></dote-viewmode-overview-item>
         </section>
       `;
     }
