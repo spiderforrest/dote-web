@@ -1,3 +1,7 @@
+/* NOTE: this library sends requests every time you use its functions for now,
+*  but in future will be rewritten to be much more conservative with fetches and will cache items
+*  so they don't have to be re-sent. We will Optimize Later(tm)(promise).
+*/
 export class Items {
   // the client copy of the items array is stored as this.#items-as requests get made, it's populated
   // _sparsely_ with any data its gotten sent over. This is all done in the update_cache() function,
@@ -87,6 +91,7 @@ export class Items {
   // takes an id and a depth to recurse on
   // returns an out of order array containing all the matched items
   // depth starts at 1; to return only the root item, use depth=1, for root+children, depth=2, and so on
+  // if depth=0, fetches depth=1000 (as many as reasonably possible)
   async fetch_recursive(id, depth) {
     const res = await fetch(`/api/data/recursive?id=${id}&depth=${depth}`, {
       method: 'GET',

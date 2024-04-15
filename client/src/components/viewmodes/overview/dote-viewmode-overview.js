@@ -24,14 +24,13 @@ export class DoteViewmodeOverview extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // once connected to DOM and context is available, fetch root items
-    // currently commented out for testing purposes
-    // this.userData.userItems.fetch_root()
-    //   .then((result) => this._userItemList = result)
-    //   .catch((fail) => this._userItemList = "failure");
-
-    this.userData.userItems.get_item(1)
-      .then((result) => this._userItemList = result)
+    // once connected to DOM and context is available, fetch top-level items
+    // that is, those that are parents of children, but don't have parents of their own
+    this.userData.userItems.fetch_root()
+      .then((result) => {
+        this._userItemList = result;
+        console.log("top-level items: ", result);
+      })
       .catch((fail) => this._userItemList = "failure");
   }
 
@@ -50,9 +49,13 @@ export class DoteViewmodeOverview extends LitElement {
     if (this._userItemList.length === 0)
       return html`<p><i>No items.</i></p>`;
     else {
+      // render list of top-level items and give them each their own individual component
+      // these individual components will then create additional components for each of their children
+      // and then those children will render components for their children
+      // circle of life, baby
       return html`
         <section>
-          <dote-viewmode-overview-item .itemData=${this._userItemList}></dote-viewmode-overview-item>
+          <dote-viewmode-overview-item .itemData=${this._userItemList[0]}></dote-viewmode-overview-item>
         </section>
       `;
     }
