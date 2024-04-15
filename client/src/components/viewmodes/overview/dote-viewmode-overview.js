@@ -55,7 +55,7 @@ export class DoteViewmodeOverview extends LitElement {
       // circle of life, baby
       return html`
         <section>
-          <dote-viewmode-overview-item .itemData=${this._userItemList[0]}></dote-viewmode-overview-item>
+          ${this._userItemList.map((item) => html`<dote-viewmode-overview-item .itemData=${item}></dote-viewmode-overview-item>`)}
         </section>
       `;
     }
