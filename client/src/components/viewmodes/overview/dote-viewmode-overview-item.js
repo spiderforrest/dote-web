@@ -30,8 +30,9 @@ export class DoteViewmodeOverviewItem extends LitElement {
     // get and store the data for this item's direct children, if it has any
     this.userData.userItems.fetch_recursive(this.itemData.id, 2)
       .then((result) => {
+        // filter 
         this._directChildren = result.filter((item) => item.id !== this.itemData.id);
-        console.log("id ", this.itemData.id, "'s direct children: ", this._directChildren);
+        // console.log("id ", this.itemData.id, "'s direct children: ", this._directChildren);
       })
       .catch(() => this._directChildren = "failure");
     }
@@ -49,7 +50,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
         childContent = undefined;
       } else {
         // finally, if the item does have children, create elements for them
-        childContent = this._directChildren.map((child) => html`<dote-viewmode-overview-item .itemData=${child}></dote-viewmode-overview-item>`)
+        childContent = this._directChildren.map((child) => html`<dote-viewmode-overview-item .itemData=${{...child, depth: this.itemData.depth+1}}></dote-viewmode-overview-item>`)
       }
     }
     
@@ -58,6 +59,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
         <span>${this.itemData.title} | </span>
         <span>${this.itemData.type} | </span>
         <span>(bodytoggle) | </span>
+        <span>depth: ${this.itemData.depth} | </span>
         <span><em>created: ${new Date(this.itemData.created).toString()}</em></span>
         <hr>
         ${childContent}
@@ -70,6 +72,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
       border-left: thin solid grey;
       border-bottom: thin solid grey;
       margin-left: 5px;
+      margin-bottom: 3px;
     }
   `;
 }
