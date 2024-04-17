@@ -2,11 +2,14 @@ import {LitElement, css, html} from 'lit';
 import {ContextConsumer} from '@lit/context';
 
 import {userContextKey} from '../../context/dote-context-objects.js';
-import {Items} from '../../../util/Items.js'
+import {Items} from '../../../util/Items.js';
 import {DoteViewmodeOverviewItem} from './dote-viewmode-overview-item.js';
 
 export class DoteViewmodeOverview extends LitElement {
-  _userDataContext = new ContextConsumer(this, {context: userContextKey, subscribe: true});
+  _userDataContext = new ContextConsumer(this, {
+    context: userContextKey,
+    subscribe: true,
+  });
 
   // NOTE: context not accessible in constructor--only after component mounts to DOM
   get userData() {
@@ -15,7 +18,7 @@ export class DoteViewmodeOverview extends LitElement {
 
   static properties = {
     _userItemList: {state: true},
-  }
+  };
 
   constructor() {
     super();
@@ -27,18 +30,29 @@ export class DoteViewmodeOverview extends LitElement {
 
     // once connected to DOM and context is available, fetch top-level items
     // that is, those that are parents of children, but don't have parents of their own
-    //
-    // NOTE: fetch_root() currently fetches tags with no parents as well as items that
-    // only have tags as parents. This will be switched out for a query that fetches only
-    // items with no parents once the query API is written.
-    this.userData.userItems.fetch_root()
+    this.userData.userItems
+      .query(
+        JSON.stringify({
+          queries: [
+            {
+              type: 'recursive',
+              logic: 'AND',
+              id: 1,
+              depth: 2,
+            },
+          ],
+        })
+      )
       .then((result) => {
+        console.log(result);
         this._userItemList = result;
         // console.log("top-level items: ", result);
       })
-      .catch((fail) => this._userItemList = "failure");
+      .catch((fail) => {
+        this._userItemList = 'failure';
+        console.log(fail);
+      });
   }
-
 
   render() {
     // if results not yet available, display loading text
@@ -47,12 +61,11 @@ export class DoteViewmodeOverview extends LitElement {
     }
 
     // if fetching data fails, display error
-    if (this._userItemList === "failure") {
+    if (this._userItemList === 'failure') {
       return html`<p><b>Error: fetching data failed.</b></p>`;
     }
 
-    if (this._userItemList.length === 0)
-      return html`<p><i>No items.</i></p>`;
+    if (this._userItemList.length === 0) return html`<p><i>No items.</i></p>`;
     else {
       // render list of top-level items and give them each their own individual component
       // these individual components will then create additional components for each of their children
@@ -60,7 +73,12 @@ export class DoteViewmodeOverview extends LitElement {
       // circle of life, baby
       return html`
         <section>
-        ${this._userItemList.map((item) => html`<dote-viewmode-overview-item .itemData=${{...item, depth: 0}}></dote-viewmode-overview-item>`)}
+          ${this._userItemList.map(
+            (item) =>
+              html`<dote-viewmode-overview-item
+                .itemData=${{...item, depth: 0}}
+              ></dote-viewmode-overview-item>`
+          )}
         </section>
       `;
     }

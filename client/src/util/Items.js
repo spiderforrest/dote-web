@@ -1,7 +1,7 @@
 /* NOTE: this library sends requests every time you use its functions for now,
-*  but in future will be rewritten to be much more conservative with fetches and will cache items
-*  so they don't have to be re-sent. We will Optimize Later(tm)(promise).
-*/
+ *  but in future will be rewritten to be much more conservative with fetches and will cache items
+ *  so they don't have to be re-sent. We will Optimize Later(tm)(promise).
+ */
 export class Items {
   // the client copy of the items array is stored as this.#items-as requests get made, it's populated
   // _sparsely_ with any data its gotten sent over. This is all done in the update_cache() function,
@@ -61,6 +61,37 @@ export class Items {
     return this.#items;
   }
 
+  // the query function should be called to generate any user veiw
+  // there's no way to evaluate this on the client side, so it shouldn't ever be called recursively
+  // (unlike all of the other functions/methods of this class)
+  //
+  // it takes an array of objects, each object representing a criterion to match items
+  // those objects require the fields `type` and `logic`, but may require more depending on type
+  //
+  // logic must currently be either "AND" or "OR" (other operators maybe eventually) and determines
+  // if it adds matches to the response or subtracts non-matches
+  // (jank: if and only if there's ORs, all items must match at least one of the OR critera)
+  //
+  // `type` is the kind of criteria; currently supported types are:
+  // match - requires `field` and `value`, and matches items where `field` has `value
+  // search - requires `field` and `value`, and matches items where `field` contains `value` (substring or array item)
+  // recursive - requires `id` and optionally `depth`, and matches items decended from item `id` to depth
+  // --root-- I GIVE UP THIS IS STUPID WE DON'T NEED IT TODO: MAKE IT NOT STUPID
+  // range - requires `start` and `end`, and matches items where id is inside the range of those (inclusive)
+  async query(query) {
+    const res = await fetch(`/api/data/query`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: query,
+    });
+
+    // the response sends two groups of items; one that matches the query, and one that's tags of items
+    // that match the query
+    const {matches, adjacent} = await res.json(res);
+    this.#update_cache([...matches, ...adjacent]);
+    return matches;
+  }
+
   // takes id
   // gives item
   async get_item(id) {
@@ -92,7 +123,8 @@ export class Items {
   // returns an out of order array containing all the matched items
   // depth starts at 1; to return only the root item, use depth=1, for root+children, depth=2, and so on
   // if depth=0, fetches depth=1000 (as many as reasonably possible)
-  async fetch_recursive(id, depth) {
+  async get_recursive(id, depth) {
+    // function breadth_first_recursive_search(id, depth) {}
     const res = await fetch(`/api/data/recursive?id=${id}&depth=${depth}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
@@ -103,19 +135,8 @@ export class Items {
     return bundle;
   }
 
-  async fetch_root() {
-    const res = await fetch(`/api/data/root`, {
-      method: 'GET',
-      headers: {'Content-Type': 'application/json'},
-    });
-
-    const bundle = await res.json();
-    if (bundle) this.#update_cache(bundle);
-    return bundle;
-  }
-
   // returns an item by uuid
-  async find_uuid(uuid) {
+  async get_by_uuid(uuid) {
     const match = this.#items.find((item) => item.uuid == uuid);
     if (match) return match;
 
@@ -159,7 +180,7 @@ export class Items {
   }
 
   // takes a uuid(for safety) and completely deletes the item
-  async delete_item(uuid) {
+  async delete(uuid) {
     await fetch(`/api/data/uuid/${uuid}`, {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
