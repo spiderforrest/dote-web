@@ -1,5 +1,6 @@
 const { auth, add } = require("../lib/users");
-const { get_data_from_disk, get_range, get_recursive, get_root_items, query_handler, get_by_uuid, create, modify, remove } = require("../lib/items");
+const { get_data_from_disk, get_by_uuid, create, modify, remove } = require("../lib/items");
+const { query, get_range, get_recursive } = require("../lib/query");
 const auth_middleware = require("../lib/auth");
 const router = require('express').Router();
 
@@ -96,8 +97,8 @@ router.get("/data/uuid/:uuid", auth_middleware, (req, res) => {
 // USE THE WRONG REQUEST TYPE. aaaaaaaaaa
 router.post("/data/query", auth_middleware, (req, res) => {
   try {
-    const matches = query_handler(req.session.user, req.body.queries);
-    res.status(200).json(matches || []);
+    const bundle = query(req.session.user, req.body.queries);
+    res.status(200).json(bundle);
   } catch(err) {
     console.error(err);
     res.status(500).json({ message: 'internal server error', error: err});
