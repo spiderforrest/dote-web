@@ -10,7 +10,7 @@ const app = express();
 app.use(session({
   secret: process.env.SECRET,
   cookie: {
-    maxAge: process.env.SESSION_AGE,
+    maxAge: Number(process.env.SESSION_AGE),
     sameSite: 'strict',
   },
   resave: true,
@@ -28,5 +28,5 @@ app.use(express.static('client/dist'));
 
 
 
-app.listen(process.env.PORT);
+app.listen(Number(process.env.PORT));
 console.log("server running on " + process.env.PORT)
