@@ -27,6 +27,10 @@ export class DoteViewmodeOverview extends LitElement {
 
     // once connected to DOM and context is available, fetch top-level items
     // that is, those that are parents of children, but don't have parents of their own
+    //
+    // NOTE: fetch_root() currently fetches tags with no parents as well as items that
+    // only have tags as parents. This will be switched out for a query that fetches only
+    // items with no parents once the query API is written.
     this.userData.userItems.fetch_root()
       .then((result) => {
         this._userItemList = result;
