@@ -18,6 +18,7 @@ export class DoteViewmodeOverview extends LitElement {
 
   static properties = {
     _userItemList: {state: true},
+    tagColors: {}
   };
 
   constructor() {
@@ -30,6 +31,7 @@ export class DoteViewmodeOverview extends LitElement {
 
     // once connected to DOM and context is available, fetch top-level items
     // that is, those that are parents of children, but don't have parents of their own
+    // note that all fetches from server should happen via this component--avoid fetches in recursively spawned child elements
     this.userData.userItems
       .query(
         JSON.stringify({

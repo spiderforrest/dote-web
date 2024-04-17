@@ -5,6 +5,7 @@ import {userContextKey} from '../../context/dote-context-objects.js';
 import {Items} from '../../../util/Items.js';
 
 export class DoteViewmodeOverviewItem extends LitElement {
+  // context, getters, and properties =======================
   _userDataContext = new ContextConsumer(this, {
     context: userContextKey,
     subscribe: true,
@@ -18,13 +19,22 @@ export class DoteViewmodeOverviewItem extends LitElement {
   static properties = {
     showBody: {},
     itemData: {},
-    _directChildren: {},
+    childrenMinimized: {},
+    _directCompleteChildren: {},
+    _directIncompleteChildren: {},
+    _childrenLoaded: {},
+    _childrenLoadingError: {}
   };
-
+  
+  // constructor and lifecycle methods =======================
   constructor() {
     super();
     this.showBody = false;
-    this._directChildren = undefined;
+    this.childrenMinimized = true;
+    this._directDoneChildren = [],
+    this._directNotDoneChildren = [];
+    this._childrenLoaded = false;
+    this._childrenLoadingError = false;
   }
 
   connectedCallback() {
@@ -34,39 +44,57 @@ export class DoteViewmodeOverviewItem extends LitElement {
     this.userData.userItems
       .get_recursive(this.itemData.id, 2)
       .then((result) => {
-        // filter
-        this._directChildren = result.filter(
-          (item) => item.id !== this.itemData.id
+        // filter out the current item, then sort items that are done and those that aren't
+        this._directNotDoneChildren = result.filter(
+          (item) => item.id !== this.itemData.id && item.done === false
         );
+        this._directDoneChildren = result.filter(
+          (item) => item.id !== this.itemData.id && item.done === true
+        );
+        this._childrenLoaded = true;
         // console.log("id ", this.itemData.id, "'s direct children: ", this._directChildren);
       })
-      .catch(() => (this._directChildren = 'failure'));
+      .catch(() => (this._childrenLoadingError = true));
   }
-
+  
+  // render and styling ========================================
   render() {
-    // the stuff displayed in the item UI section where an item's children go
+    // the HTML content displayed in the item UI section where an item's children go when it's open
     let childContent;
+    // the HTML content displayed in the item UI section where an item's children go when it's minimized
+    let minimizedChildrenList;
+
+    // if error loading children, display error message
+    if (this._childrenLoadingError === true) {
+      childContent = html`<p><strong><i>error loading children.</i></strong></p>`;
+      minimizedChildrenList = html`<p><i>error loading children.</i></p>`;
+    }
 
     // if not yet loaded, display loading message
-    if (this._directChildren === undefined) {
+    if (this._childrenLoaded === false) {
       childContent = html`<p><i>loading children...</i></p>`;
+      minimizedChildrenList = html`<p><i>children loading...</i></p>`;
     } else {
       // once loaded, if this item has no children, render nothing
-      if (this._directChildren.length < 1) {
+      if ( (this._directNotDoneChildren.length + this._directDoneChildren.length) < 1) {
         childContent = undefined;
+        minimizedChildrenList = undefined;
       } else {
-        // finally, if the item does have children, create elements for them
-        childContent = this._directChildren.map(
-          (child) =>
-            html`<dote-viewmode-overview-item
-              .itemData=${{...child, depth: this.itemData.depth + 1}}
-            ></dote-viewmode-overview-item>`
-        );
+        // If the item does have children, create compressed "children hidden" UI element for them
+        minimizedChildrenList = html`<p class="dote-overview-itemcard-minimized-children-list"><i>(${this._directNotDoneChildren.length} incomplete children hidden)</i></p>`;
+
+        // Create elements to render if child list is not minimized
+        childContent = this._directNotDoneChildren.map(
+          (child) => html`
+            <hr/>
+            <dote-viewmode-overview-item .itemData=${{...child, depth: this.itemData.depth + 1}}></dote-viewmode-overview-item>
+        `);
       }
     }
 
     return html`
       <section class="dote-overview-itemcard">
+        
         <span>${this.itemData.title} | </span>
         <span>${this.itemData.type} | </span>
         <span>(bodytoggle) | </span>
@@ -74,8 +102,11 @@ export class DoteViewmodeOverviewItem extends LitElement {
         <span
           ><em>created: ${new Date(this.itemData.created).toString()}</em></span
         >
-        <hr />
-        ${childContent}
+      ${(this._directDoneChildren.length + this._directNotDoneChildren.length > 0) ?
+          html`<a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a>` :
+          html`<a>~</a>`
+      }
+      ${this.childrenMinimized === false ? childContent : minimizedChildrenList}
       </section>
     `;
   }
@@ -88,6 +119,11 @@ export class DoteViewmodeOverviewItem extends LitElement {
       margin-bottom: 3px;
     }
   `;
+
+  // event handlers ==================================================
+  _toggleChildrenMinimized() {
+    this.childrenMinimized === true ? this.childrenMinimized = false : this.childrenMinimized = true;
+  }
 }
 
 customElements.define('dote-viewmode-overview-item', DoteViewmodeOverviewItem);
