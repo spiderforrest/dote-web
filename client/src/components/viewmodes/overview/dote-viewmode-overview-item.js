@@ -81,42 +81,38 @@ export class DoteViewmodeOverviewItem extends LitElement {
         minimizedChildrenList = undefined;
       } else {
         // If the item does have children, create compressed "children hidden" UI element for them
-        minimizedChildrenList = html`<p class="dote-overview-itemcard-minimized-children-list"><i>(${this._directNotDoneChildren.length} incomplete children hidden)</i></p>`;
+        minimizedChildrenList = html`<p class="dote-overview-itemcard-minimized-children-list"><i>(${this._directNotDoneChildren.length} incomplete, ${this._directDoneChildren.length} complete children hidden)</i></p>`;
 
         // Create elements to render if child list is not minimized
         childContent = this._directNotDoneChildren.map(
           (child) => html`
-            <hr/>
             <dote-viewmode-overview-item .itemData=${{...child, depth: this.itemData.depth + 1}}></dote-viewmode-overview-item>
         `);
       }
     }
 
     return html`
-      <section class="dote-overview-itemcard">
-          
-        ${(this._directDoneChildren.length + this._directNotDoneChildren.length > 0) ?
-            html`<a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a>` :
-            undefined // returning undefined from a Lit template renders nothing
-        }
-        <span>${this.itemData.title} | </span>
-        <span>${this.itemData.type} | </span>
-        <span>(bodytoggle) | </span>
-        <span>depth: ${this.itemData.depth} | </span>
-        <span
-          ><em>created: ${new Date(this.itemData.created).toString()}</em></span
-        >
+      ${(this._directDoneChildren.length + this._directNotDoneChildren.length > 0) ?
+          html`<a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a>` :
+          undefined // returning undefined from a Lit template renders nothing
+      }
+      <span><strong>${this.itemData.title}</strong> | </span>
+      <span>${this.itemData.type} | </span>
+      <span>(bodytoggle) | </span>
+      <span>depth: ${this.itemData.depth} | </span>
+      <span><em>created: ${new Date(this.itemData.created).toLocaleString()}</em></span>
       ${this.childrenMinimized === false ? childContent : minimizedChildrenList}
-      </section>
     `;
   }
 
   static styles = css`
-    .dote-overview-itemcard {
+    :host {
+      display: block;
       border-left: thin solid grey;
       border-bottom: thin solid grey;
-      margin-left: 5px;
-      margin-bottom: 3px;
+      margin-left: 1em;
+      margin-bottom: 0.25em;
+      padding-right: 0.5em;
     }
 
     .dote-overview-itemcard-minimized-children-list {
