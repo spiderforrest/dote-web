@@ -17,7 +17,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
   }
 
   static properties = {
-    showBody: {},
+    bodyMinimized: {},
     itemData: {},
     childrenMinimized: {},
     _directCompleteChildren: {},
@@ -29,7 +29,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
   // constructor and lifecycle methods =======================
   constructor() {
     super();
-    this.showBody = false;
+    this.bodyMinimized = true;
     this.childrenMinimized = true;
     this._directDoneChildren = [],
     this._directNotDoneChildren = [];
@@ -63,6 +63,8 @@ export class DoteViewmodeOverviewItem extends LitElement {
     let childContent;
     // the HTML content displayed in the item UI section where an item's children go when it's minimized
     let minimizedChildrenList;
+    // the HTML content displayed directly beneath the item title, displays item body data if it has any and is not minimized
+    let bodyContent;
 
     // if error loading children, display error message
     if (this._childrenLoadingError === true) {
@@ -75,7 +77,12 @@ export class DoteViewmodeOverviewItem extends LitElement {
       childContent = html`<p><i>loading children...</i></p>`;
       minimizedChildrenList = html`<p><i>children loading...</i></p>`;
     } else {
-      // once loaded, if this item has no children, render nothing
+      // once loaded
+      // if this item has body data, create element for it
+      this.itemData.body ?
+        bodyContent = html`<p class="dote-overview-itemcard-body-data">${this.itemData.body}</p>` :
+        bodyContent = undefined;
+      // if this item has no children, render nothing
       if ( (this._directNotDoneChildren.length + this._directDoneChildren.length) < 1) {
         childContent = undefined;
         minimizedChildrenList = undefined;
@@ -100,9 +107,10 @@ export class DoteViewmodeOverviewItem extends LitElement {
     return html`
       <span class="dote-overview-itemcard-title"><strong>${this.itemData.title}</strong> | </span>
       <span class="dote-overview-itemcard-type">${this.itemData.type} | </span>
-      <span class="dote-overview-itemcard-bodytoggle">(bodytoggle) | </span>
+      <span class="dote-overview-itemcard-bodytoggle" @click="${this._toggleBodyMinimized}">${this.bodyMinimized ? "≢ " : "≡ "}| </span>
       <span class="dote-overview-itemcard-bodytoggle">depth: ${this.itemData.depth} | </span>
       <span class="dote-overview-itemcard-bodytoggle"><em>created: ${new Date(this.itemData.created).toLocaleString()}</em></span>
+      ${this.bodyMinimized === false ? bodyContent : undefined}
       ${this.childrenMinimized === false ? childContent : minimizedChildrenList}
     `;
   }
@@ -121,6 +129,14 @@ export class DoteViewmodeOverviewItem extends LitElement {
       margin-left: 0.25em;
     }
 
+    .dote-overview-itemcard-body-data {
+      border: thin dashed gold;
+      margin-bottom: 0.25em;
+      margin-top: 0.25em;
+      padding-left: 0.5em;
+      background-color: lightgrey;
+    }
+
     .dote-overview-itemcard-minimized-children-list {
       margin: 0.25em 0em 0.25em 1em;
     }
@@ -128,7 +144,11 @@ export class DoteViewmodeOverviewItem extends LitElement {
 
   // event handlers ==================================================
   _toggleChildrenMinimized() {
-    this.childrenMinimized === true ? this.childrenMinimized = false : this.childrenMinimized = true;
+    this.childrenMinimized = !this.childrenMinimized;
+  }
+
+  _toggleBodyMinimized() {
+    this.bodyMinimized = !this.bodyMinimized;
   }
 }
 
