@@ -122,6 +122,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
       display: block;
       border-left: thin solid grey;
       border-bottom: thin solid grey;
+      border-radius: 0 0 0 1em;
       margin-left: 1em;
       margin-bottom: 0.25em;
       padding-left: 0.5em;
