@@ -32,6 +32,8 @@ export class DoteViewmodeOverview extends LitElement {
     // once connected to DOM and context is available, fetch top-level items
     // that is, those that are parents of children, but don't have parents of their own
     // note that all fetches from server should happen via this component--avoid fetches in recursively spawned child elements
+    //
+    // TODO: currently, trying to use query of type `match` can't match items with no parents--ask spood 2 fix
     this.userData.userItems
       .query(
         JSON.stringify({
@@ -40,7 +42,7 @@ export class DoteViewmodeOverview extends LitElement {
               type: 'recursive',
               logic: 'AND',
               id: 1,
-              depth: 2,
+              depth: 1,
             },
           ],
         })
@@ -56,6 +58,7 @@ export class DoteViewmodeOverview extends LitElement {
       });
   }
 
+  // TODO: add top command bar for finding/adding/modifying items
   render() {
     // if results not yet available, display loading text
     if (this._userItemList === undefined) {

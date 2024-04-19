@@ -63,7 +63,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
     let childContent;
     // the HTML content displayed in the item UI section where an item's children go when it's minimized
     let minimizedChildrenList;
-    // the HTML content displayed directly beneath the item title, displays item body data if it has any and is not minimized
+    // the HTML content displayed directly beneath the item title, displays item body data
     let bodyContent;
 
     // if error loading children, display error message
@@ -77,39 +77,41 @@ export class DoteViewmodeOverviewItem extends LitElement {
       childContent = html`<p><i>loading children...</i></p>`;
       minimizedChildrenList = html`<p><i>children loading...</i></p>`;
     } else {
-      // once loaded
-      // if this item has body data, create element for it
-      this.itemData.body ?
-        bodyContent = html`<p class="dote-overview-itemcard-body-data">${this.itemData.body}</p>` :
-        bodyContent = undefined;
-      // if this item has no children, render nothing
-      if ( (this._directNotDoneChildren.length + this._directDoneChildren.length) < 1) {
-        childContent = undefined;
-        minimizedChildrenList = undefined;
-      } else {
-        // If the item does have children, create compressed "children hidden" UI element for them
-        minimizedChildrenList = html`<p class="dote-overview-itemcard-minimized-children-list"><a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a><i>(${this._directNotDoneChildren.length} incomplete, ${this._directDoneChildren.length} complete children hidden)</i></p>`;
+        // once loaded
+        // if this item has body data, create element for it
+        this.itemData.body ?
+          bodyContent = html`<p class="dote-overview-itemcard-body-data">${this.itemData.body}</p>` :
+          bodyContent = undefined;
+        // if this item has no children, render nothing
+        if ( (this._directNotDoneChildren.length + this._directDoneChildren.length) < 1) {
+          childContent = undefined;
+          minimizedChildrenList = undefined;
+        } else {
+          // If the item does have children, create compressed "children hidden" UI element for them
+          minimizedChildrenList = html`<p class="dote-overview-itemcard-minimized-children-list"><a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a><i>(${this._directNotDoneChildren.length} incomplete, ${this._directDoneChildren.length} complete children hidden)</i></p>`;
 
-        // Create elements to render if child list is not minimized
-        childContent = 
-          html`
-            <section class="dote-overview-itemcard-expanded-children-list">
-              <a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a>
-              ${this._directNotDoneChildren.map(
-                (child) => html`
-                  <dote-viewmode-overview-item .itemData=${{...child, depth: this.itemData.depth + 1}}></dote-viewmode-overview-item>
-              `)}
-            </section>
-        `
-      }
+          // Create elements to render if child list is not minimized
+          childContent = 
+            html`
+              <section class="dote-overview-itemcard-expanded-children-list">
+                <a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a>
+                ${this._directNotDoneChildren.map(
+                  (child) => html`
+                    <dote-viewmode-overview-item .itemData=${{...child, depth: this.itemData.depth + 1}}></dote-viewmode-overview-item>
+                `)}
+              </section>
+          `;
+        }
     }
 
     return html`
       <span class="dote-overview-itemcard-title"><strong>${this.itemData.title}</strong> | </span>
       <span class="dote-overview-itemcard-type">${this.itemData.type} | </span>
-      <span class="dote-overview-itemcard-bodytoggle" @click="${this._toggleBodyMinimized}">${this.bodyMinimized ? "≢ " : "≡ "}| </span>
-      <span class="dote-overview-itemcard-bodytoggle">depth: ${this.itemData.depth} | </span>
-      <span class="dote-overview-itemcard-bodytoggle"><em>created: ${new Date(this.itemData.created).toLocaleString()}</em></span>
+      ${this.itemData.body
+          ? html`<span class="dote-overview-itemcard-bodytoggle" @click="${this._toggleBodyMinimized}">${this.bodyMinimized ? "≢ " : "≡ "}| </span>`
+          : undefined}
+      <span class="dote-overview-itemcard-depth">depth: ${this.itemData.depth} | </span>
+      <span class="dote-overview-itemcard-ctime"><em>created: ${new Date(this.itemData.created).toLocaleString()}</em></span>
       ${this.bodyMinimized === false ? bodyContent : undefined}
       ${this.childrenMinimized === false ? childContent : minimizedChildrenList}
     `;
