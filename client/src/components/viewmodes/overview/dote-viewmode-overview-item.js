@@ -94,7 +94,11 @@ export class DoteViewmodeOverviewItem extends LitElement {
 
     return html`
       <section class="dote-overview-itemcard">
-        
+          
+        ${(this._directDoneChildren.length + this._directNotDoneChildren.length > 0) ?
+            html`<a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a>` :
+            undefined // returning undefined from a Lit template renders nothing
+        }
         <span>${this.itemData.title} | </span>
         <span>${this.itemData.type} | </span>
         <span>(bodytoggle) | </span>
@@ -102,10 +106,6 @@ export class DoteViewmodeOverviewItem extends LitElement {
         <span
           ><em>created: ${new Date(this.itemData.created).toString()}</em></span
         >
-      ${(this._directDoneChildren.length + this._directNotDoneChildren.length > 0) ?
-          html`<a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a>` :
-          html`<a>~</a>`
-      }
       ${this.childrenMinimized === false ? childContent : minimizedChildrenList}
       </section>
     `;
@@ -117,6 +117,10 @@ export class DoteViewmodeOverviewItem extends LitElement {
       border-bottom: thin solid grey;
       margin-left: 5px;
       margin-bottom: 3px;
+    }
+
+    .dote-overview-itemcard-minimized-children-list {
+      margin: 0.25em 0em 0.25em 1em;
     }
   `;
 
