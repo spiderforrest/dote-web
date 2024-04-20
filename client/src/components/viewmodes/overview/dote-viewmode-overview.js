@@ -60,6 +60,8 @@ export class DoteViewmodeOverview extends LitElement {
 
   // TODO: add top command bar for finding/adding/modifying items
   render() {
+    let itemElements = undefined;
+
     // if results not yet available, display loading text
     if (this._userItemList === undefined) {
       return html`<p class="dote-overview-loadingtext"><i>fetching data...</i></p>`;
@@ -70,23 +72,33 @@ export class DoteViewmodeOverview extends LitElement {
       return html`<p class="dote-overview-errortext"><b>Error: fetching data failed.</b></p>`;
     }
 
-    if (this._userItemList.length === 0) return html`<p class="dote-overview-noitems"><i>No items.</i></p>`;
-    else {
+    // top utility bar with item sorting controls, other tools
+    const utilityBar = html`<p>hi mom</p><hr>`;
+    
+    console.log(this._userItemList);
+    // if parentless items exist, create the elements for them
+    if (this._userItemList.length > 0) {
       // render list of top-level items and give them each their own individual component
       // these individual components will then create additional components for each of their children
       // and then those children will render components for their children
       // circle of life, baby
-      return html`
-        <section>
-          ${this._userItemList.map(
-            (item) =>
-              html`<dote-viewmode-overview-item
-                .itemData=${{...item, depth: 0}}
-              ></dote-viewmode-overview-item>`
-          )}
-        </section>
+      itemElements = html`
+        ${this._userItemList.map(
+          (item) =>
+            html`<dote-viewmode-overview-item
+              .itemData=${{...item, depth: 0}}
+            ></dote-viewmode-overview-item>`
+        )}
       `;
+    } else {
+      // if no items exist, display message notifying user
+      itemElements = html`<p class="dote-overview-noitems"><i>No items.</i></p>`;
     }
+    
+    return html`
+      ${utilityBar}
+      ${itemElements}
+    `;
   }
 
   // styling =================================
