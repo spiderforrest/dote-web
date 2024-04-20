@@ -115,7 +115,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
           ? html`<span class="dote-overview-itemcard-bodytoggle" @click="${this._toggleBodyMinimized}">${this.bodyMinimized ? "≢ " : "≡ "}| </span>`
           : undefined}
       <span class="dote-overview-itemcard-depth">depth: ${this.itemData.depth} | </span>
-      <span class="dote-overview-itemcard-ctime"><em>created: ${new Date(this.itemData.created).toLocaleString()}</em></span>
+      <span class="dote-overview-itemcard-ctime"><em>created: ${new Date(this.itemData.created*1000).toLocaleString()}</em></span>
       ${this.bodyMinimized === false ? bodyContent : undefined}
       ${this.childrenMinimized === false ? childContent : minimizedChildrenList}
     `;
