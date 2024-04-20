@@ -62,15 +62,15 @@ export class DoteViewmodeOverview extends LitElement {
   render() {
     // if results not yet available, display loading text
     if (this._userItemList === undefined) {
-      return html`<p><i>fetching data...</i></p>`;
+      return html`<p class="dote-overview-loadingtext"><i>fetching data...</i></p>`;
     }
 
     // if fetching data fails, display error
     if (this._userItemList === 'failure') {
-      return html`<p><b>Error: fetching data failed.</b></p>`;
+      return html`<p class="dote-overview-errortext"><b>Error: fetching data failed.</b></p>`;
     }
 
-    if (this._userItemList.length === 0) return html`<p><i>No items.</i></p>`;
+    if (this._userItemList.length === 0) return html`<p class="dote-overview-noitems"><i>No items.</i></p>`;
     else {
       // render list of top-level items and give them each their own individual component
       // these individual components will then create additional components for each of their children

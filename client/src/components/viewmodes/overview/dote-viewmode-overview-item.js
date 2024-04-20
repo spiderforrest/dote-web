@@ -88,13 +88,12 @@ export class DoteViewmodeOverviewItem extends LitElement {
           minimizedChildrenList = undefined;
         } else {
           // If the item does have children, create compressed "children hidden" UI element for them
-          minimizedChildrenList = html`<p class="dote-overview-itemcard-minimized-children-list"><a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a><i>(${this._directNotDoneChildren.length} incomplete, ${this._directDoneChildren.length} complete children hidden)</i></p>`;
+          minimizedChildrenList = html`<p @click="${this._toggleChildrenMinimized}" class="dote-overview-itemcard-minimized-children-list"><i>(${this._directNotDoneChildren.length} incomplete, ${this._directDoneChildren.length} complete children hidden)</i></p>`;
 
           // Create elements to render if child list is not minimized
           childContent = 
             html`
               <section class="dote-overview-itemcard-expanded-children-list">
-                <a @click="${this._toggleChildrenMinimized}">${this.childrenMinimized === true ? "╋" : "━"}</a>
                 ${this._directNotDoneChildren.map(
                   (child) => html`
                     <dote-viewmode-overview-item .itemData=${{...child, depth: this.itemData.depth + 1}}></dote-viewmode-overview-item>
@@ -105,6 +104,11 @@ export class DoteViewmodeOverviewItem extends LitElement {
     }
 
     return html`
+      ${
+        this._directNotDoneChildren.length + this._directDoneChildren.length > 0
+          ? html`<a @click="${this._toggleChildrenMinimized}" class="dote-overview-itemcard-childrentoggle">${this.childrenMinimized === true ? "╋" : "━"}</a>`
+          : html`<a class="dote-overview-itemcard-childrentoggle">●</a>`
+      }
       <span class="dote-overview-itemcard-title"><strong>${this.itemData.title}</strong> | </span>
       <span class="dote-overview-itemcard-type">${this.itemData.type} | </span>
       ${this.itemData.body
@@ -128,12 +132,17 @@ export class DoteViewmodeOverviewItem extends LitElement {
       padding-left: 0.5em;
     }
 
+    .dote-overview-itemcard-childrentoggle {
+      margin-left: .25em;
+      margin-right: .25em;
+    }
+
     .dote-overview-itemcard-title {
       margin-left: 0.25em;
     }
 
     .dote-overview-itemcard-body-data {
-      border: thin dashed gold;
+      border: thin solid gold;
       margin-bottom: 0.25em;
       margin-top: 0.25em;
       padding-left: 0.5em;
