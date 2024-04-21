@@ -34,6 +34,7 @@ export class DoteViewmodeOverview extends LitElement {
     // note that all fetches from server should happen via this component--avoid fetches in recursively spawned child elements
     //
     // TODO: currently, trying to use query of type `match` can't match items with no parents--ask spood 2 fix
+    // UPDATE: okay i think it's fixed now?? test it to make sure
     this.userData.userItems
       .query(
         JSON.stringify({

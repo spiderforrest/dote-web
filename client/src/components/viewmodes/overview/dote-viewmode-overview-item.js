@@ -41,6 +41,8 @@ export class DoteViewmodeOverviewItem extends LitElement {
     super.connectedCallback();
 
     // get and store the data for this item's direct children, if it has any
+    // TODO: update this code so that the item only gets its own data
+    // and spawns children by using `get_id()`
     this.userData.userItems
       .get_recursive(this.itemData.id, 2)
       .then((result) => {
