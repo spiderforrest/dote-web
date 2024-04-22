@@ -83,11 +83,13 @@ export class DoteViewmodeOverview extends LitElement {
       // these individual components will then create additional components for each of their children
       // and then those children will render components for their children
       // circle of life, baby
+      console.log("blehgh: ", this._userItemList[0].id);
       itemElements = html`
         ${this._userItemList.map(
           (item) =>
             html`<dote-viewmode-overview-item
-              .itemData=${{...item, depth: 0}}
+              .itemId=${item.id}
+              .itemDepth=0
             ></dote-viewmode-overview-item>`
         )}
       `;
