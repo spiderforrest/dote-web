@@ -18,8 +18,8 @@ export class DoteViewmodeOverviewItem extends LitElement {
 
   static properties = {
     bodyMinimized: {},
-    itemId: {},
-    itemDepth: {},
+    itemId: {type: Number},
+    itemDepth: {type: Number},
     itemData: {},
     childrenMinimized: {},
     _thisItemLoading: {},
@@ -95,8 +95,9 @@ export class DoteViewmodeOverviewItem extends LitElement {
     } else {
       // once loaded
       // if this item has body data and it's toggled to display, create element for it
-      if (this.itemData.body && !this.bodyMinimized)
+      if (this.itemData.body && !this.bodyMinimized) {
         bodyContentEl = html`<p class="dote-overview-itemcard-body-data">${this.itemData.body}</p>`;
+      }
 
       // if item has children, create elements for them,
       // either minimized or maximized depending on item state
@@ -105,8 +106,8 @@ export class DoteViewmodeOverviewItem extends LitElement {
           ? minimizedChildrenEl = html`<p><i>(${this.itemData.children.length} direct children)</i></p>`
           : childContentEl = this.itemData.children.map((child) => 
             html`<dote-viewmode-overview-item
-              .itemId=${child}
-              .itemDepth=${this.itemDepth + 1}>
+              itemid=${child}
+              itemdepth=${this.itemDepth + 1}>
             </dote-viewmode-overview-item>`)
       }
     }

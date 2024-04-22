@@ -31,10 +31,6 @@ export class DoteViewmodeOverview extends LitElement {
 
     // once connected to DOM and context is available, fetch top-level items
     // that is, those that are parents of children, but don't have parents of their own
-    // note that all fetches from server should happen via this component--avoid fetches in recursively spawned child elements
-    //
-    // TODO: currently, trying to use query of type `match` can't match items with no parents--ask spood 2 fix
-    // UPDATE: okay i think it's fixed now?? test it to make sure
     this.userData.userItems
       .query(
         JSON.stringify({
@@ -49,13 +45,12 @@ export class DoteViewmodeOverview extends LitElement {
         })
       )
       .then((result) => {
-        console.log(result);
         this._userItemList = result;
         // console.log("top-level items: ", result);
       })
       .catch((fail) => {
         this._userItemList = 'failure';
-        console.log(fail);
+        console.log("fetch failed: ", fail);
       });
   }
 
@@ -83,13 +78,12 @@ export class DoteViewmodeOverview extends LitElement {
       // these individual components will then create additional components for each of their children
       // and then those children will render components for their children
       // circle of life, baby
-      console.log("blehgh: ", this._userItemList[0].id);
       itemElements = html`
         ${this._userItemList.map(
           (item) =>
             html`<dote-viewmode-overview-item
-              .itemId=${item.id}
-              .itemDepth=0
+              itemid=${item.id}
+              itemdepth="0"
             ></dote-viewmode-overview-item>`
         )}
       `;
