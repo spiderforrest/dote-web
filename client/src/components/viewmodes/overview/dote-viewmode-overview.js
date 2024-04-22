@@ -40,10 +40,10 @@ export class DoteViewmodeOverview extends LitElement {
         JSON.stringify({
           queries: [
             {
-              type: 'recursive',
+              type: 'match',
               logic: 'AND',
-              id: 1,
-              depth: 1,
+              field: 'parents',
+              value: [],
             },
           ],
         })
