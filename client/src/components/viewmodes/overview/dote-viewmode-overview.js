@@ -71,7 +71,6 @@ export class DoteViewmodeOverview extends LitElement {
     // top utility bar with item sorting controls, other tools
     const utilityBar = html`<p>hi mom</p><hr>`;
     
-    console.log(this._userItemList);
     // if parentless items exist, create the elements for them
     if (this._userItemList.length > 0) {
       // render list of top-level items and give them each their own individual component

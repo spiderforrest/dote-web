@@ -22,13 +22,8 @@ export class DoteViewmodeOverviewItem extends LitElement {
     itemDepth: {type: Number},
     itemData: {},
     childrenMinimized: {},
-    _thisItemLoading: {},
-    _thisItemLoadingError: {},
-
-    // _directCompleteChildren: {},
-    // _directIncompleteChildren: {},
-    // _childrenLoaded: {},
-    // _childrenLoadingError: {}
+    _thisItemLoading: {state: true},
+    _thisItemLoadingError: {state: true},
   };
   
   // constructor and lifecycle methods =======================
@@ -38,42 +33,26 @@ export class DoteViewmodeOverviewItem extends LitElement {
     this.childrenMinimized = true;
     this._thisItemLoading = true;
     this._thisItemLoadingError = false;
-    console.log("(constructor) itemid: ", this.itemId);
-    // this._directDoneChildren = [],
-    // this._directNotDoneChildren = [];
-    // this._childrenLoaded = false;
-    // this._childrenLoadingError = false;
+    // console.log("(constructor) itemid: ", this.itemId);
+
   }
 
   connectedCallback() {
     super.connectedCallback();
 
-    // get and store the data for this item's direct children, if it has any
     // TODO: update this code so that the item only gets its own data
     // and spawns children by using `get_id()`
     this.userData.userItems
       .get_item(this.itemId)
         .then((item) => {
-          console.log("(callback) itemid: ", this.itemId);
-          console.log("(callback) item: ", item);
-          console.log("all cached items: ", this.userData.userItems.get_cache());
+          // console.log("(callback) itemid: ", this.itemId);
+          // console.log("(callback) item: ", item);
+          // console.log("all cached items: ", this.userData.userItems.get_cache());
           this.itemData = item;
+          this._thisItemLoading = false;
         })
-      // .get_recursive(this.itemData.id, 2)
-      // .then((result) => {
-      //   // filter out the current item, then sort items that are done and those that aren't
-      //   this._directNotDoneChildren = result.filter(
-      //     (item) => item.id !== this.itemData.id && item.done === false
-      //   );
-      //   this._directDoneChildren = result.filter(
-      //     (item) => item.id !== this.itemData.id && item.done === true
-      //   );
-      //   this._childrenLoaded = true;
-      //   // console.log("id ", this.itemData.id, "'s direct children: ", this._directChildren);
-      // })
         .catch(() => (this._thisItemLoadingError = true));
 
-    this._thisItemLoading = false;
   }
   
   // render and styling ========================================
@@ -90,12 +69,12 @@ export class DoteViewmodeOverviewItem extends LitElement {
       return html`<p><strong>error loading item!</strong></p>`;
 
     // if not finished loading, display loading message
-    if (this._thisItemLoading === true) {
+    if (this._thisItemLoading) {
       return html`<p><i>loading item...</i></p>`;
     } else {
       // once loaded
       // if this item has body data and it's toggled to display, create element for it
-      if (this.itemData.body && !this.bodyMinimized) {
+      if (this.itemData.body && this.bodyMinimized === false) {
         bodyContentEl = html`<p class="dote-overview-itemcard-body-data">${this.itemData.body}</p>`;
       }
 
@@ -111,42 +90,6 @@ export class DoteViewmodeOverviewItem extends LitElement {
             </dote-viewmode-overview-item>`)
       }
     }
-    // if error loading children, display error message
-    // if (this._childrenLoadingError === true) {
-    //   childContent = html`<p><strong><i>error loading children.</i></strong></p>`;
-    //   minimizedChildrenList = html`<p><i>error loading children.</i></p>`;
-    // }
-
-    // if not yet loaded, display loading message
-    // if (this._thisItemLoading === true) {
-    //   childContent = html`<p><i>loading children...</i></p>`;
-    //   minimizedChildrenList = html`<p><i>children loading...</i></p>`;
-    // } else {
-    //     // once loaded
-    //     // if this item has body data, create element for it
-    //     this.itemData.body ?
-    //       bodyContent = html`<p class="dote-overview-itemcard-body-data">${this.itemData.body}</p>` :
-    //       bodyContent = undefined;
-    //     // if this item has no children, render nothing
-    //     if ( (this._directNotDoneChildren.length + this._directDoneChildren.length) < 1) {
-    //       childContent = undefined;
-    //       minimizedChildrenList = undefined;
-    //     } else {
-    //       // If the item does have children, create compressed "children hidden" UI element for them
-    //       minimizedChildrenList = html`<p @click="${this._toggleChildrenMinimized}" class="dote-overview-itemcard-minimized-children-list"><i>(${this._directNotDoneChildren.length} incomplete, ${this._directDoneChildren.length} complete children hidden)</i></p>`;
-    //
-    //       // Create elements to render if child list is not minimized
-    //       childContent = 
-    //         html`
-    //           <section class="dote-overview-itemcard-expanded-children-list">
-    //             ${this._directNotDoneChildren.map(
-    //               (child) => html`
-    //                 <dote-viewmode-overview-item .itemData=${{...child, depth: this.itemData.depth + 1}}></dote-viewmode-overview-item>
-    //             `)}
-    //           </section>
-    //       `;
-    //     }
-    // }
 
     return html`
       ${
@@ -156,7 +99,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
       }
       <span class="dote-overview-itemcard-title"><strong>${this.itemData.title}</strong> | </span>
       <span class="dote-overview-itemcard-type">${this.itemData.type} | </span>
-      ${(this.itemData.body !== undefined)
+      ${this.itemData.body
           ? html`<span class="dote-overview-itemcard-bodytoggle" @click="${this._toggleBodyMinimized}">${this.bodyMinimized ? "≢ " : "≡ "}| </span>`
           : undefined}
       <span class="dote-overview-itemcard-depth">depth: ${this.itemDepth} | </span>
