@@ -69,7 +69,15 @@ export class DoteViewmodeOverview extends LitElement {
     }
 
     // top utility bar with item sorting controls, other tools
-    const utilityBar = html`<p>hi mom</p><hr>`;
+    const utilityBar = html`
+      <nav class="dote-overview-utilbar">
+        <button>Add item</button>
+        <button>Modify item</button>
+        <input placeholder="search items..." />
+      </nav>
+
+      <hr>
+      `;
     
     // if parentless items exist, create the elements for them
     if (this._userItemList.length > 0) {
@@ -100,8 +108,20 @@ export class DoteViewmodeOverview extends LitElement {
   // styling =================================
 
   static styles = css`
-    p {
-      border: thin double grey;
+    .dote-overview-errortext {
+      border: thick dashed lightred;
+      background-color: pink;
+    }
+
+    .dote-overview-utilbar {
+      display: flex;
+      flex-flow; row nowrap;
+      gap: 1em;
+    }
+
+    .dote-overview-noitems {
+      border: thick dashed grey;
+      background-color: lightgray;
     }
   `;
 }
