@@ -82,7 +82,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
       // either minimized or maximized depending on item state
       if (this.itemData.children.length > 0) {
         this.childrenMinimized
-          ? minimizedChildrenEl = html`<p><i>(${this.itemData.children.length} direct children)</i></p>`
+          ? minimizedChildrenEl = html`<p class="dote-overview-itemcard-minimized-children"><i>(${this.itemData.children.length} direct children)</i></p>`
           : childContentEl = this.itemData.children.map((child) => 
             html`<dote-viewmode-overview-item
               itemid=${child}
@@ -114,10 +114,14 @@ export class DoteViewmodeOverviewItem extends LitElement {
       display: block;
       border-left: thin solid grey;
       border-bottom: thin solid grey;
+      border-top: thin dashed lightgray;
       border-radius: 0 0 0 1em;
-      margin-left: 1em;
+      margin-left: 0.75em;
       margin-bottom: 0.25em;
+      margin-top: 0.25em;
       padding-left: 0.5em;
+      padding-top: 0.15em;
+      padding-bottom: 0.15em;
     }
 
     .dote-overview-itemcard-childrentoggle {
@@ -137,7 +141,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
       background-color: lightgrey;
     }
 
-    .dote-overview-itemcard-minimized-children-list {
+    .dote-overview-itemcard-minimized-children {
       margin: 0.25em 0em 0.25em 1em;
     }
   `;
