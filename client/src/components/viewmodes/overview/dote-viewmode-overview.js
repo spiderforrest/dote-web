@@ -54,7 +54,6 @@ export class DoteViewmodeOverview extends LitElement {
       });
   }
 
-  // TODO: add top command bar for finding/adding/modifying items
   render() {
     let itemElements = undefined;
 
@@ -71,9 +70,17 @@ export class DoteViewmodeOverview extends LitElement {
     // top utility bar with item sorting controls, other tools
     const utilityBar = html`
       <nav class="dote-overview-utilbar">
-        <button>Add item</button>
-        <button>Modify item</button>
-        <input placeholder="search items..." />
+        <button class="dote-overview-utilbar-additem">Add item</button>
+        <button class="dote-overview-utilbar-modifyitem">Modify item</button>
+        <span class="dote-overview-utilbar-midspacer"></span>
+        <div class="dote-overview-utilbar-sortselect">
+          <label for="overview-sort-select">sort by: </label>
+          <select id="overview-sort-select" name="overview-sort-select" required>
+            <option value="in-progress" selected>in progress</option>
+            <option value="by-tag">by tag</option>
+          </select>
+        </div>
+        <input class="dote-overview-utilbar-searchbar" placeholder="search items..." />
       </nav>
 
       <hr>
@@ -116,7 +123,30 @@ export class DoteViewmodeOverview extends LitElement {
     .dote-overview-utilbar {
       display: flex;
       flex-flow; row nowrap;
+      justify-content: space-around;
+      align-items: center;
       gap: 1em;
+    }
+
+    .dote-overview-utilbar-additem {
+      order: 1;
+    }
+
+    .dote-overview-utilbar-modifyitem {
+      order: 2;
+    }
+
+    .dote-overview-utilbar-midspacer {
+      order: 3;
+      flex-grow: 1;
+    }
+
+    .dote-overview-utilbar-sortselect {
+      order: 4;
+    }
+
+    .dote-overview-utilbar-searchbar {
+      order: 5;
     }
 
     .dote-overview-noitems {
