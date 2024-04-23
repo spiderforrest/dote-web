@@ -70,17 +70,17 @@ export class DoteViewmodeOverview extends LitElement {
     // top utility bar with item sorting controls, other tools
     const utilityBar = html`
       <nav class="dote-overview-utilbar">
-        <button class="dote-overview-utilbar-additem">Add item</button>
-        <button class="dote-overview-utilbar-modifyitem">Modify item</button>
+        <button class="dote-overview-utilbar-additem">Add item (todo)</button>
+        <button class="dote-overview-utilbar-modifyitem">Modify item (todo)</button>
         <span class="dote-overview-utilbar-midspacer"></span>
         <div class="dote-overview-utilbar-sortselect">
-          <label for="overview-sort-select">sort by: </label>
+          <label for="overview-sort-select">sort by (todo): </label>
           <select id="overview-sort-select" name="overview-sort-select" required>
             <option value="in-progress" selected>in progress</option>
             <option value="by-tag">by tag</option>
           </select>
         </div>
-        <input class="dote-overview-utilbar-searchbar" placeholder="search items..." />
+        <input class="dote-overview-utilbar-searchbar" placeholder="search items...(todo)" />
       </nav>
 
       <hr>
