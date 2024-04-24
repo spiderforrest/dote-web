@@ -161,13 +161,13 @@ export class DoteViewmodeOverview extends LitElement {
   // event handlers ==================================================
   _handleCreateItem() {
     const options = {
-      detail = {
+      detail: {
         buttonClicked: "add"
       },
       bubbles: true,
       composed: true
     };
-    this.dispatchEvent(new CustomEvent('userAddItem', options));
+    this.dispatchEvent(new CustomEvent('userAddOrEditItemGeneric', options));
   }
 }
 
