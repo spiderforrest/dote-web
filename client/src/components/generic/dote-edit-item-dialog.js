@@ -23,11 +23,16 @@ export class DoteEditItemDialog extends LitElement {
     super.connectedCallback();
   }
 
-  render() { html`
-    <section class="dote-add-edit-item-dialog-popup">
-      <h4>${this.operationType === "add" ? "Create Item" : "Edit Item"}</h4>
-    </section>
-  `}
+  render() { 
+
+
+
+    return html`
+      <section class="dote-add-edit-item-dialog-popup">
+        <h4>${this.operationType === "add" ? "Create Item" : "Edit Item"}</h4>
+      </section>
+    `;
+  }
 
   // styling =================================
   static styles = css`

@@ -28,9 +28,9 @@ export class DoteClient extends LitElement {
 
   // render and event listeners =====================
   render() {
-    const fromBottomDialogPanel = undefined;
+    let fromBottomDialogPanel = undefined;
     if (this.addOrEditItemDialogOpen) {
-      this.fromBottomDialogPanel = html`<DoteEditItemDialog></DoteEditItemDialog>`
+      fromBottomDialogPanel = html`<dote-edit-item-dialog></dote-edit-item-dialog>`
     }
 
 
@@ -47,6 +47,7 @@ export class DoteClient extends LitElement {
 
   _openAddOrEditItemDialog(e) {
     this.addOrEditItemDialogOpen = true;
+    console.log(this.addOrEditItemDialogOpen);
   }
 }
 
