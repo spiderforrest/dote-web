@@ -6,6 +6,7 @@ import {Items} from '../../../util/Items.js';
 import {DoteViewmodeOverviewItem} from './dote-viewmode-overview-item.js';
 
 export class DoteViewmodeOverview extends LitElement {
+  // context, getters, and properties =======================
   _userDataContext = new ContextConsumer(this, {
     context: userContextKey,
     subscribe: true,
@@ -21,6 +22,7 @@ export class DoteViewmodeOverview extends LitElement {
     tagColors: {}
   };
 
+  // constructor and lifecycle methods =======================
   constructor() {
     super();
     this._userItemList = undefined;
@@ -54,6 +56,7 @@ export class DoteViewmodeOverview extends LitElement {
       });
   }
 
+  // render and styling ========================================
   render() {
     let itemElements = undefined;
 
@@ -70,17 +73,17 @@ export class DoteViewmodeOverview extends LitElement {
     // top utility bar with item sorting controls, other tools
     const utilityBar = html`
       <nav class="dote-overview-utilbar">
-        <button class="dote-overview-utilbar-additem">Add item (todo)</button>
-        <button class="dote-overview-utilbar-modifyitem">Modify item (todo)</button>
+        <button @click="${this._handleCreateItem}" class="dote-overview-utilbar-additem">Add item (placeholder)</button>
+        <button class="dote-overview-utilbar-modifyitem">Modify item (placeholder)</button>
         <span class="dote-overview-utilbar-midspacer"></span>
         <div class="dote-overview-utilbar-sortselect">
-          <label for="overview-sort-select">sort by (todo): </label>
+          <label for="overview-sort-select">sort by (placeholder): </label>
           <select id="overview-sort-select" name="overview-sort-select" required>
             <option value="in-progress" selected>in progress</option>
             <option value="by-tag">by tag</option>
           </select>
         </div>
-        <input class="dote-overview-utilbar-searchbar" placeholder="search items...(todo)" />
+        <input class="dote-overview-utilbar-searchbar" placeholder="search items...(placeholder)" />
       </nav>
 
       <hr>
@@ -154,6 +157,18 @@ export class DoteViewmodeOverview extends LitElement {
       background-color: lightgray;
     }
   `;
+
+  // event handlers ==================================================
+  _handleCreateItem() {
+    const options = {
+      detail = {
+        buttonClicked: "add"
+      },
+      bubbles: true,
+      composed: true
+    };
+    this.dispatchEvent(new CustomEvent('userAddItem', options));
+  }
 }
 
 customElements.define('dote-viewmode-overview', DoteViewmodeOverview);
