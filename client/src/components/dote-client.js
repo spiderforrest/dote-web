@@ -8,19 +8,23 @@ import {DoteAuth} from './dote-auth.js';
 import {DoteEditItemDialog} from './generic/dote-edit-item-dialog.js';
 
 export class DoteClient extends LitElement {
+  // context, getters, and properties =======================
   _userDataConsumer = new ContextConsumer(this, {
     context: userContextKey,
     subscribe: true,
   });
 
   static properties = {
-    addOrEditItemDialogOpen: {}
+    _addOrEditItemDialogOpen: {type: Boolean, state: true},
+    _addOrEditItemData: {state: true}
   };
 
   get userData() {
     return this._userDataConsumer.value;
   }
 
+
+  // constructor and lifecycle methods =======================
   constructor() {
     super();
     this.addOrEditItemDialogOpen = false;
@@ -30,7 +34,7 @@ export class DoteClient extends LitElement {
   render() {
     let fromBottomDialogPanel = undefined;
     if (this.addOrEditItemDialogOpen) {
-      fromBottomDialogPanel = html`<dote-edit-item-dialog></dote-edit-item-dialog>`
+      fromBottomDialogPanel = html`<dote-edit-item-dialog operationType=${this._addOrEditItemData.buttonClicked} existingItemData=${this._addOrEditItemData.existingItemData}></dote-edit-item-dialog>`
     }
 
 
@@ -47,7 +51,11 @@ export class DoteClient extends LitElement {
 
   _openAddOrEditItemDialog(e) {
     this.addOrEditItemDialogOpen = true;
-    console.log(this.addOrEditItemDialogOpen);
+    this._addOrEditItemData = e.detail;
+  }
+
+  _closeAddOrEditItemDialog(e) {
+    this.addOrEditItemDialogOpen = false;
   }
 }
 

@@ -74,7 +74,7 @@ export class DoteViewmodeOverview extends LitElement {
     const utilityBar = html`
       <nav class="dote-overview-utilbar">
         <button @click="${this._handleCreateItem}" class="dote-overview-utilbar-additem">Add item (placeholder)</button>
-        <button class="dote-overview-utilbar-modifyitem">Modify item (placeholder)</button>
+        <button @click="${this._handleEditItem}" class="dote-overview-utilbar-modifyitem">Modify item (placeholder)</button>
         <span class="dote-overview-utilbar-midspacer"></span>
         <div class="dote-overview-utilbar-sortselect">
           <label for="overview-sort-select">sort by (placeholder): </label>
@@ -163,6 +163,19 @@ export class DoteViewmodeOverview extends LitElement {
     const options = {
       detail: {
         buttonClicked: "add"
+      },
+      bubbles: true,
+      composed: true
+    };
+    this.dispatchEvent(new CustomEvent('userAddOrEditItemGeneric', options));
+  }
+
+  _handleEditItem() {
+    // TODO: actually send the edited item info w/the event
+    const options = {
+      detail: {
+        buttonClicked: "edit",
+        existingItemData: "placeholder"
       },
       bubbles: true,
       composed: true
