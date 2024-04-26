@@ -19,7 +19,7 @@ export class DoteViewmodeOverview extends LitElement {
 
   static properties = {
     _userItemList: {state: true},
-    tagColors: {}
+    tagColors: {},
   };
 
   // constructor and lifecycle methods =======================
@@ -28,6 +28,8 @@ export class DoteViewmodeOverview extends LitElement {
     this._userItemList = undefined;
   }
 
+  // TODO: Allie; check todo in _loginListener in dote-client-root.js;
+  // this should be replaced since query() is no longer async
   connectedCallback() {
     super.connectedCallback();
 
@@ -38,27 +40,19 @@ export class DoteViewmodeOverview extends LitElement {
     // and test data has been edited to reflect this.
     // This code should be updated to handle this--it currently recursively renders every child based on its "children" list,
     // so it's now rendering indirect children of tags twice--once as direct children of tag, once as direct children of their parent item
-    this.userData.userItems
-      .query(
-        JSON.stringify({
-          queries: [
-            {
-              type: 'match',
-              logic: 'AND',
-              field: 'parents',
-              value: [],
-            },
-          ],
-        })
-      )
-      .then((result) => {
-        this._userItemList = result;
-        // console.log("top-level items: ", result);
-      })
-      .catch((fail) => {
-        this._userItemList = 'failure';
-        console.log("fetch failed: ", fail);
-      });
+
+    this._userItemList = this.userData.userItems.query([
+      {type: 'match', logic: 'AND', field: 'parents', value: []},
+    ]);
+    console.log(this._userItemList);
+    // .then((result) => {
+    //   this._userItemList = result;
+    //   // console.log("top-level items: ", result);
+    // })
+    // .catch((fail) => {
+    //   this._userItemList = 'failure';
+    //   console.log('fetch failed: ', fail);
+    // });
   }
 
   // render and styling ========================================
@@ -67,33 +61,54 @@ export class DoteViewmodeOverview extends LitElement {
 
     // if results not yet available, display loading text
     if (this._userItemList === undefined) {
-      return html`<p class="dote-overview-loadingtext"><i>fetching data...</i></p>`;
+      return html`<p class="dote-overview-loadingtext">
+        <i>fetching data...</i>
+      </p>`;
     }
 
     // if fetching data fails, display error
     if (this._userItemList === 'failure') {
-      return html`<p class="dote-overview-errortext"><b>Error: fetching data failed.</b></p>`;
+      return html`<p class="dote-overview-errortext">
+        <b>Error: fetching data failed.</b>
+      </p>`;
     }
 
     // top utility bar with item sorting controls, other tools
     const utilityBar = html`
       <nav class="dote-overview-utilbar">
-        <button @click="${this._handleCreateItem}" class="dote-overview-utilbar-additem">Add item (placeholder)</button>
-        <button @click="${this._handleEditItem}" class="dote-overview-utilbar-modifyitem">Modify item (placeholder)</button>
+        <button
+          @click="${this._handleCreateItem}"
+          class="dote-overview-utilbar-additem"
+        >
+          Add item (placeholder)
+        </button>
+        <button
+          @click="${this._handleEditItem}"
+          class="dote-overview-utilbar-modifyitem"
+        >
+          Modify item (placeholder)
+        </button>
         <span class="dote-overview-utilbar-midspacer"></span>
         <div class="dote-overview-utilbar-sortselect">
           <label for="overview-sort-select">sort by (placeholder): </label>
-          <select id="overview-sort-select" name="overview-sort-select" required>
+          <select
+            id="overview-sort-select"
+            name="overview-sort-select"
+            required
+          >
             <option value="in-progress" selected>in progress</option>
             <option value="by-tag">by tag</option>
           </select>
         </div>
-        <input class="dote-overview-utilbar-searchbar" placeholder="search items...(placeholder)" />
+        <input
+          class="dote-overview-utilbar-searchbar"
+          placeholder="search items...(placeholder)"
+        />
       </nav>
 
-      <hr>
-      `;
-    
+      <hr />
+    `;
+
     // if parentless items exist, create the elements for them
     if (this._userItemList.length > 0) {
       // render list of top-level items and give them each their own individual component
@@ -111,13 +126,12 @@ export class DoteViewmodeOverview extends LitElement {
       `;
     } else {
       // if no items exist, display message notifying user
-      itemElements = html`<p class="dote-overview-noitems"><i>No items.</i></p>`;
+      itemElements = html`<p class="dote-overview-noitems">
+        <i>No items.</i>
+      </p>`;
     }
-    
-    return html`
-      ${utilityBar}
-      ${itemElements}
-    `;
+
+    return html` ${utilityBar} ${itemElements} `;
   }
 
   // styling =================================
@@ -167,10 +181,10 @@ export class DoteViewmodeOverview extends LitElement {
   _handleCreateItem() {
     const options = {
       detail: {
-        buttonClicked: "add"
+        buttonClicked: 'add',
       },
       bubbles: true,
-      composed: true
+      composed: true,
     };
     this.dispatchEvent(new CustomEvent('userAddOrEditItemGeneric', options));
   }
@@ -179,11 +193,11 @@ export class DoteViewmodeOverview extends LitElement {
     // TODO: actually send the edited item info w/the event
     const options = {
       detail: {
-        buttonClicked: "edit",
-        existingItemData: "placeholder"
+        buttonClicked: 'edit',
+        existingItemData: 'placeholder',
       },
       bubbles: true,
-      composed: true
+      composed: true,
     };
     this.dispatchEvent(new CustomEvent('userAddOrEditItemGeneric', options));
   }

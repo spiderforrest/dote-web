@@ -40,6 +40,9 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+router.get("/userdata", (req, res) => {
+  res.status(200).json(req.session.user); // TODO: spider; clean up and bundle and don't send password hashes etc
+});
 
 
 // data stuff
@@ -51,60 +54,6 @@ router.get("/data/all", auth_middleware, (req, res) => {
   // and ssssstinky?
   res.status(200).json({ data: req.session.user.items });
 });
-
-router.get("/data/range", auth_middleware, (req, res) => {
-  try {
-    const range = get_range(req.session.user, req.query.first, req.query.last);
-    res.status(200).json(range || []);
-  } catch(err) {
-    console.error(err);
-    res.status(500).json({ message: 'internal server error', error: err});
-  }
-})
-
-router.get("/data/recursive", auth_middleware, (req, res) => {
-  try {
-    const bundle = get_recursive(req.session.user, req.query.id, req.query.depth);
-    res.status(200).json(bundle || []);
-  } catch(err) {
-    console.error(err);
-    res.status(500).json({ message: 'internal server error', error: err});
-  }
-})
-
-router.get("/data/root", auth_middleware, (req, res) => {
-  try {
-    const bundle = get_root_items(req.session.user);
-    res.status(200).json(bundle || []);
-  } catch(err) {
-    console.error(err);
-    res.status(500).json({ message: 'internal server error', error: err});
-  }
-})
-
-router.get("/data/uuid/:uuid", auth_middleware, (req, res) => {
-  try {
-    const item = get_by_uuid(req.session.user, req.params.uuid);
-    res.status(200).json(item || []);
-  } catch(err) {
-    console.error(err);
-    res.status(500).json({ message: 'internal server error', error: err});
-  }
-})
-
-// this drives me mad: you aren't supposed to have a body on a GET request, but the requests here are
-// complex enough making them a query string would be laughably disgusting, so convention is just to
-// USE THE WRONG REQUEST TYPE. aaaaaaaaaa
-router.post("/data/query", auth_middleware, (req, res) => {
-  try {
-    const bundle = query(req.session.user, req.body.queries);
-    res.status(200).json(bundle);
-  } catch(err) {
-    console.error(err);
-    res.status(500).json({ message: 'internal server error', error: err});
-  }
-})
-
 
 router.post("/data/create", auth_middleware, (req, res) => {
   try {

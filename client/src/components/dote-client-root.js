@@ -6,15 +6,18 @@ import {Items} from '../util/Items.js';
 import {DoteClient} from './dote-client.js';
 
 export class DoteClientRoot extends LitElement {
-
   static properties = {
-    userContext: {}
+    userContext: {},
   };
-  
+
   // user data context lives here
   _userDataProvider = new ContextProvider(this, {
     context: userContextKey,
-    initialValue: { username: undefined, userUuid: undefined, userLoggedIn: false }
+    initialValue: {
+      username: undefined,
+      userUuid: undefined,
+      userLoggedIn: false,
+    },
   });
 
   set userContext(value) {
@@ -39,11 +42,17 @@ export class DoteClientRoot extends LitElement {
 
   _loginListener(e) {
     // pull username and UUID from successful login, set in context
-    const userItemList = new Items(e.detail.ctime)
-    this.userContext = {username: e.detail.username,
-                        userUuid: e.detail.userUuid,
-                        userItems: userItemList}
-    this.userContext = {...this.userContext, userLoggedIn: true}
+    const userItems = new Items();
+    // TODO: Allie; this is async, and the page should not try to render items until it finishes
+    // I can easily add userItems.ready() or something that calls a callback or returns a bool or whatever
+    // if that's easier for you
+    userItems.initialize(e.detail.ctime);
+    this.userContext = {
+      userItems,
+      username: e.detail.username,
+      userUuid: e.detail.userUuid,
+    };
+    this.userContext = {...this.userContext, userLoggedIn: true};
   }
 }
 

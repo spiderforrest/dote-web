@@ -25,7 +25,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
     _thisItemLoading: {state: true},
     _thisItemLoadingError: {state: true},
   };
-  
+
   // constructor and lifecycle methods =======================
   constructor() {
     super();
@@ -34,29 +34,30 @@ export class DoteViewmodeOverviewItem extends LitElement {
     this._thisItemLoading = true;
     this._thisItemLoadingError = false;
     // console.log("(constructor) itemid: ", this.itemId);
-
   }
 
+  // TODO: Allie; check todo in _loginListener in dote-client-root.js;
+  // this should be replaced since get_item is no longer async
   connectedCallback() {
     super.connectedCallback();
+    // .get_item(this.itemId)
+    // .then((item) => {
+    //   // console.log("(callback) itemid: ", this.itemId);
+    //   // console.log("(callback) item: ", item);
+    //   // console.log("all cached items: ", this.userData.userItems.get_cache());
+    //   this.itemData = item;
+    //   this._thisItemLoading = false;
+    // })
+    // .catch(() => (this._thisItemLoadingError = true));
 
-    // TODO: update this code so that the item only gets its own data
-    // and spawns children by using `get_id()`
-    this.userData.userItems
-      .get_item(this.itemId)
-        .then((item) => {
-          // console.log("(callback) itemid: ", this.itemId);
-          // console.log("(callback) item: ", item);
-          // console.log("all cached items: ", this.userData.userItems.get_cache());
-          this.itemData = item;
-          this._thisItemLoading = false;
-        })
-        .catch(() => (this._thisItemLoadingError = true));
-
+    this._thisItemLoading = false;
   }
-  
+
   // render and styling ========================================
   render() {
+    // TODO: Allie; check todo in _loginListener in dote-client-root.js; no idea if this should be here
+    this.itemData = this.userData.userItems.get_item(this.itemId);
+
     // the HTML content displayed in the item UI section where an item's children go when it's open
     let childContentEl = undefined;
     // the HTML content displayed in the item UI section where an item's children go when it's minimized
@@ -75,64 +76,88 @@ export class DoteViewmodeOverviewItem extends LitElement {
       // once loaded
       // if this item has body data and it's toggled to display, create element for it
       if (this.itemData.body && this.bodyMinimized === false) {
-        bodyContentEl = html`<p class="dote-overview-itemcard-body-data">${this.itemData.body}</p>`;
+        bodyContentEl = html`<p class="dote-overview-itemcard-body-data">
+          ${this.itemData.body}
+        </p>`;
       }
 
       // if item has children, create elements for them,
       // either minimized or maximized depending on item state
       if (this.itemData.children.length > 0) {
         this.childrenMinimized
-          ? minimizedChildrenEl = html`<p class="dote-overview-itemcard-minimized-children"><i>(${this.itemData.children.length} children)</i></p>`
-          : childContentEl = this.itemData.children.map((child) => {
-            // if the item whose children we're rendering is a tag,
-            // DON'T render child if the child has a parent that's not also tagged by this tag
-            // this is so an indirect child of a tag doesn't render twice (once as direct child of the tag,
-            // once as direct child of that same tag's child)
-            // TODO: this is still broken and tags render indirect children who are tagged still
-            if (this.itemData.type === "tag") {
-              let thisChildsParents = [];
-              this.userData.userItems.get_item(child)
-                .then((item) => {console.log("checked item: ",item);thisChildsParents = item.parents.filter((id) => id !== this.itemData.id)})
-                .catch(() => console.log("problem checking tagged child's parents!"));
-              let shouldRenderItem = true;
-              console.log("child's parents: ",thisChildsParents);
-              for (const parent of thisChildsParents) {
-                if (this.itemData.children.includes(parent))
-                  shouldRenderItem = false;
-              }
-              if (shouldRenderItem === true) {
-                return html`<dote-viewmode-overview-item
-                  itemid=${child}
-                  itemdepth=${this.itemDepth + 1}>
-                </dote-viewmode-overview-item>`;
+          ? (minimizedChildrenEl = html`<p
+              class="dote-overview-itemcard-minimized-children"
+            >
+              <i>(${this.itemData.children.length} children)</i>
+            </p>`)
+          : (childContentEl = this.itemData.children.map((childId) => {
+              // if the item whose children we're rendering is a tag,
+              // DON'T render child if the child has a parent that's not also tagged by this tag
+              // this is so an indirect child of a tag doesn't render twice (once as direct child of the tag,
+              // once as direct child of that same tag's child)
+              if (this.itemData.type === 'tag') {
+                // turns out this is not as simple as .includes()
+                // so: get the kid, then check the all of the kids parents
+                // if their only parents are tags, they aren't being rendered anywhere else(except in
+                // another tag but that's wanted) and need to be rendered
+                let shouldRender = true;
+                const child = this.userData.userItems.get_item(childId);
+                for (const parent of child.parents) {
+                  // check every parent
+                  if (this.userData.userItems.get_item(parent).type !== 'tag')
+                    shouldRender = false; // if any aren't a tag, don't render
+                }
+
+                if (shouldRender) {
+                  return html`<dote-viewmode-overview-item
+                    itemid=${childId}
+                    itemdepth=${this.itemDepth + 1}
+                  >
+                  </dote-viewmode-overview-item>`;
+                } else {
+                  return html`<p>blurghghhtghgh</p>`;
+                }
               } else {
-                return html`<p>blurghghhtghgh</p>`;
+                // if the item whose children we're rendering isn't a tag,
+                // we don't need to worry about it
+                return html`<dote-viewmode-overview-item
+                  itemid=${childId}
+                  itemdepth=${this.itemDepth + 1}
+                >
+                </dote-viewmode-overview-item>`;
               }
-            } else {
-              // if the item whose children we're rendering isn't a tag,
-              // we don't need to worry about it
-              return html`<dote-viewmode-overview-item
-                itemid=${child}
-                itemdepth=${this.itemDepth + 1}>
-              </dote-viewmode-overview-item>`
-            }
-            })
+            }));
       }
     }
 
     return html`
-      ${
-        this.itemData.children.length > 0
-          ? html`<a @click="${this._toggleChildrenMinimized}" class="dote-overview-itemcard-childrentoggle">${this.childrenMinimized === true ? "╋" : "━"}</a>`
-          : html`<a class="dote-overview-itemcard-childrentoggle">●</a>`
-      }
-      <span class="dote-overview-itemcard-title"><strong>${this.itemData.title}</strong> | </span>
+      ${this.itemData.children.length > 0
+        ? html`<a
+            @click="${this._toggleChildrenMinimized}"
+            class="dote-overview-itemcard-childrentoggle"
+            >${this.childrenMinimized === true ? '𑾰' : '━'}</a
+          >`
+        : html`<a class="dote-overview-itemcard-childrentoggle">●</a>`}
+      <span class="dote-overview-itemcard-title"
+        ><strong>${this.itemData.title}</strong> |
+      </span>
       <span class="dote-overview-itemcard-type">${this.itemData.type} | </span>
       ${this.itemData.body
-          ? html`<span class="dote-overview-itemcard-bodytoggle" @click="${this._toggleBodyMinimized}">${this.bodyMinimized ? "≢ " : "≡ "}| </span>`
-          : undefined}
-      <span class="dote-overview-itemcard-depth">depth: ${this.itemDepth} | </span>
-      <span class="dote-overview-itemcard-ctime"><em>created: ${new Date(this.itemData.created*1000).toLocaleString()}</em></span>
+        ? html`<span
+            class="dote-overview-itemcard-bodytoggle"
+            @click="${this._toggleBodyMinimized}"
+            >${this.bodyMinimized ? '≢ ' : '≡ '}|
+          </span>`
+        : undefined}
+      <span class="dote-overview-itemcard-depth"
+        >depth: ${this.itemDepth} |
+      </span>
+      <span class="dote-overview-itemcard-ctime"
+        ><em
+          >created:
+          ${new Date(this.itemData.created * 1000).toLocaleString()}</em
+        ></span
+      >
       ${bodyContentEl}
       ${this.childrenMinimized === false ? childContentEl : minimizedChildrenEl}
     `;
@@ -154,8 +179,8 @@ export class DoteViewmodeOverviewItem extends LitElement {
     }
 
     .dote-overview-itemcard-childrentoggle {
-      margin-left: .25em;
-      margin-right: .25em;
+      margin-left: 0.25em;
+      margin-right: 0.25em;
     }
 
     .dote-overview-itemcard-title {
