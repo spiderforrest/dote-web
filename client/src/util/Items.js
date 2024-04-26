@@ -2,6 +2,9 @@
  *  but in future will be rewritten to be much more conservative with fetches and will cache items
  *  so they don't have to be re-sent. We will Optimize Later(tm)(promise).
  */
+
+// last commit with caching system
+
 export class Items {
   // the client copy of the items array is stored as this.#items-as requests get made, it's populated
   // _sparsely_ with any data its gotten sent over. This is all done in the update_cache() function,
