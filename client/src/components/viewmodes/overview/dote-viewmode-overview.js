@@ -33,6 +33,11 @@ export class DoteViewmodeOverview extends LitElement {
 
     // once connected to DOM and context is available, fetch top-level items
     // that is, those that are parents of children, but don't have parents of their own
+    //
+    // TODO: dote item spec was updated so that tagged items must have tags as DIRECT parents,
+    // and test data has been edited to reflect this.
+    // This code should be updated to handle this--it currently recursively renders every child based on its "children" list,
+    // so it's now rendering indirect children of tags twice--once as direct children of tag, once as direct children of their parent item
     this.userData.userItems
       .query(
         JSON.stringify({

@@ -15,7 +15,6 @@ export class DoteEditItemDialog extends LitElement {
   constructor() {
     super();
     this.operationType = "add"; // default to add new item if not specified via attribute
-    // check if setting via attribute overrides this
     
   }
 
@@ -36,7 +35,9 @@ export class DoteEditItemDialog extends LitElement {
 
   // styling =================================
   static styles = css`
-
+    .dote-add-edit-item-dialog-popup {
+      
+    }
   `;
 }
 

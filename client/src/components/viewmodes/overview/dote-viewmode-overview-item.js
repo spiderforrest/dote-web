@@ -82,12 +82,41 @@ export class DoteViewmodeOverviewItem extends LitElement {
       // either minimized or maximized depending on item state
       if (this.itemData.children.length > 0) {
         this.childrenMinimized
-          ? minimizedChildrenEl = html`<p class="dote-overview-itemcard-minimized-children"><i>(${this.itemData.children.length} direct children)</i></p>`
-          : childContentEl = this.itemData.children.map((child) => 
-            html`<dote-viewmode-overview-item
-              itemid=${child}
-              itemdepth=${this.itemDepth + 1}>
-            </dote-viewmode-overview-item>`)
+          ? minimizedChildrenEl = html`<p class="dote-overview-itemcard-minimized-children"><i>(${this.itemData.children.length} children)</i></p>`
+          : childContentEl = this.itemData.children.map((child) => {
+            // if the item whose children we're rendering is a tag,
+            // DON'T render child if the child has a parent that's not also tagged by this tag
+            // this is so an indirect child of a tag doesn't render twice (once as direct child of the tag,
+            // once as direct child of that same tag's child)
+            // TODO: this is still broken and tags render indirect children who are tagged still
+            if (this.itemData.type === "tag") {
+              let thisChildsParents = [];
+              this.userData.userItems.get_item(child)
+                .then((item) => {console.log("checked item: ",item);thisChildsParents = item.parents.filter((id) => id !== this.itemData.id)})
+                .catch(() => console.log("problem checking tagged child's parents!"));
+              let shouldRenderItem = true;
+              console.log("child's parents: ",thisChildsParents);
+              for (const parent of thisChildsParents) {
+                if (this.itemData.children.includes(parent))
+                  shouldRenderItem = false;
+              }
+              if (shouldRenderItem === true) {
+                return html`<dote-viewmode-overview-item
+                  itemid=${child}
+                  itemdepth=${this.itemDepth + 1}>
+                </dote-viewmode-overview-item>`;
+              } else {
+                return html`<p>blurghghhtghgh</p>`;
+              }
+            } else {
+              // if the item whose children we're rendering isn't a tag,
+              // we don't need to worry about it
+              return html`<dote-viewmode-overview-item
+                itemid=${child}
+                itemdepth=${this.itemDepth + 1}>
+              </dote-viewmode-overview-item>`
+            }
+            })
       }
     }
 
