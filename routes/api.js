@@ -1,6 +1,5 @@
 const { auth, add } = require("../lib/users");
 const { get_data_from_disk, get_by_uuid, create, modify, remove } = require("../lib/items");
-const { query, get_range, get_recursive } = require("../lib/query");
 const auth_middleware = require("../lib/auth");
 const router = require('express').Router();
 

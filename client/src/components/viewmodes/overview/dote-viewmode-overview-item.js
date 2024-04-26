@@ -135,7 +135,9 @@ export class DoteViewmodeOverviewItem extends LitElement {
         ? html`<a
             @click="${this._toggleChildrenMinimized}"
             class="dote-overview-itemcard-childrentoggle"
-            >${this.childrenMinimized === true ? '𑾰' : '━'}</a
+            >${this.childrenMinimized === true
+              ? html`<strong>𑾰</strong>`
+              : '━'}</a
           >`
         : html`<a class="dote-overview-itemcard-childrentoggle">●</a>`}
       <span class="dote-overview-itemcard-title"
