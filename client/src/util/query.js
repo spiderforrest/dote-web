@@ -39,10 +39,10 @@ function get_recursive(items, target, depth_cap) {
 
 // checks items and returns all that have the field matching the value
 function get_field_match(items, field, value) {
-  if (typeof value == 'object') {
+  if (typeof value == "object") {
     // if it's not an array that's a you problem
     return items.filter((item) => {
-      if (typeof item[field] != 'object') return false;
+      if (typeof item[field] != "object") return false;
       return compare_arrays(item[field], value);
     });
   }
@@ -52,10 +52,10 @@ function get_field_match(items, field, value) {
 // looks for string matches in a field
 function get_field_search(items, field, value) {
   return items.filter((item) => {
-    if (typeof item[field] == 'string') {
+    if (typeof item[field] == "string") {
       // array.filter janks out if you return a string?
-      if (item[field].match(new RegExp(value, 'g'))) return true;
-    } else if (typeof item[field] == 'object') {
+      if (item[field].match(new RegExp(value, "g"))) return true;
+    } else if (typeof item[field] == "object") {
       if (item[field].includes(value)) return true;
     }
     return false;
@@ -78,28 +78,28 @@ function AND_query_handler(items, matches, queries) {
   // iterate thru all and call every matcher, then strip down to the AND response
   for (const query of queries) {
     switch (query.type) {
-      case 'recursive':
+      case "recursive":
         matches = AND_arrays(
           matches,
           get_recursive(items, query.id, query.depth)
         );
         break;
 
-      case 'range':
+      case "range":
         matches = AND_arrays(
           matches,
           get_range(items, query.first, query.last)
         );
         break;
 
-      case 'match':
+      case "match":
         matches = AND_arrays(
           matches,
           get_field_match(items, query.field, query.value)
         );
         break;
 
-      case 'search':
+      case "search":
         matches = AND_arrays(
           matches,
           get_field_search(items, query.field, query.value)
@@ -115,19 +115,19 @@ function OR_query_handler(items, matches, queries) {
   // iterate thru all and call every handler
   for (const query of queries) {
     switch (query.type) {
-      case 'recursive':
+      case "recursive":
         matches.push(...get_recursive(items, query.id, query.depth));
         break;
 
-      case 'range':
+      case "range":
         matches.push(...get_range(items, query.first, query.last));
         break;
 
-      case 'match':
+      case "match":
         matches.push(...get_field_match(items, query.field, query.value));
         break;
 
-      case 'search':
+      case "search":
         matches.push(...get_field_search(items, query.field, query.value));
         break;
     }
@@ -141,10 +141,10 @@ function query_handler(items, queries) {
   const AND_queries = [];
   for (const query of queries) {
     switch (query.logic) {
-      case 'OR':
+      case "OR":
         OR_queries.push(query);
         break;
-      case 'AND':
+      case "AND":
       default:
         AND_queries.push(query);
         break;

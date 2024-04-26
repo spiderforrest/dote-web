@@ -32,7 +32,7 @@ router.post("/signup", async (req, res) => {
 
     req.session.user.items = await get_data_from_disk(new_user.uuid); // unneeded but honestly just a sanity check
 
-    res.status(200).json({ username: checked_user.username, uuid: checked_user.uuid, ctime: checked_user.ctime });
+    res.status(200).json({ username: new_user.username, uuid: new_user.uuid, ctime: new_user.ctime });
 
   } else {
     res.status(400).json({ message: 'error signing up' });

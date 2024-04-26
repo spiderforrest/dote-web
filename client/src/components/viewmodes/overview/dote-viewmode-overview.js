@@ -1,9 +1,9 @@
-import {LitElement, css, html} from 'lit';
-import {ContextConsumer} from '@lit/context';
+import { LitElement, css, html } from "lit";
+import { ContextConsumer } from "@lit/context";
 
-import {userContextKey} from '../../context/dote-context-objects.js';
-import {Items} from '../../../util/Items.js';
-import {DoteViewmodeOverviewItem} from './dote-viewmode-overview-item.js';
+import { userContextKey } from "../../context/dote-context-objects.js";
+import { Items } from "../../../util/Items.js";
+import { DoteViewmodeOverviewItem } from "./dote-viewmode-overview-item.js";
 
 export class DoteViewmodeOverview extends LitElement {
   // context, getters, and properties =======================
@@ -18,7 +18,7 @@ export class DoteViewmodeOverview extends LitElement {
   }
 
   static properties = {
-    _userItemList: {state: true},
+    _userItemList: { state: true },
     tagColors: {},
   };
 
@@ -42,7 +42,8 @@ export class DoteViewmodeOverview extends LitElement {
     // so it's now rendering indirect children of tags twice--once as direct children of tag, once as direct children of their parent item
 
     this._userItemList = this.userData.userItems.query([
-      {type: 'match', logic: 'AND', field: 'parents', value: []},
+      { type: "match", logic: "OR", field: "type", value: "tag" },
+      { type: "match", logic: "OR", field: "parents", value: [] },
     ]);
     console.log(this._userItemList);
     // .then((result) => {
@@ -67,7 +68,7 @@ export class DoteViewmodeOverview extends LitElement {
     }
 
     // if fetching data fails, display error
-    if (this._userItemList === 'failure') {
+    if (this._userItemList === "failure") {
       return html`<p class="dote-overview-errortext">
         <b>Error: fetching data failed.</b>
       </p>`;
@@ -181,26 +182,26 @@ export class DoteViewmodeOverview extends LitElement {
   _handleCreateItem() {
     const options = {
       detail: {
-        buttonClicked: 'add',
+        buttonClicked: "add",
       },
       bubbles: true,
       composed: true,
     };
-    this.dispatchEvent(new CustomEvent('userAddOrEditItemGeneric', options));
+    this.dispatchEvent(new CustomEvent("userAddOrEditItemGeneric", options));
   }
 
   _handleEditItem() {
     // TODO: actually send the edited item info w/the event
     const options = {
       detail: {
-        buttonClicked: 'edit',
-        existingItemData: 'placeholder',
+        buttonClicked: "edit",
+        existingItemData: "placeholder",
       },
       bubbles: true,
       composed: true,
     };
-    this.dispatchEvent(new CustomEvent('userAddOrEditItemGeneric', options));
+    this.dispatchEvent(new CustomEvent("userAddOrEditItemGeneric", options));
   }
 }
 
-customElements.define('dote-viewmode-overview', DoteViewmodeOverview);
+customElements.define("dote-viewmode-overview", DoteViewmodeOverview);

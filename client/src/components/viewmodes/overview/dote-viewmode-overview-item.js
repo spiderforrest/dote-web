@@ -1,8 +1,8 @@
-import {LitElement, css, html} from 'lit';
-import {ContextConsumer} from '@lit/context';
+import { LitElement, css, html } from "lit";
+import { ContextConsumer } from "@lit/context";
 
-import {userContextKey} from '../../context/dote-context-objects.js';
-import {Items} from '../../../util/Items.js';
+import { userContextKey } from "../../context/dote-context-objects.js";
+import { Items } from "../../../util/Items.js";
 
 export class DoteViewmodeOverviewItem extends LitElement {
   // context, getters, and properties =======================
@@ -18,12 +18,12 @@ export class DoteViewmodeOverviewItem extends LitElement {
 
   static properties = {
     bodyMinimized: {},
-    itemId: {type: Number},
-    itemDepth: {type: Number},
+    itemId: { type: Number },
+    itemDepth: { type: Number },
     itemData: {},
     childrenMinimized: {},
-    _thisItemLoading: {state: true},
-    _thisItemLoadingError: {state: true},
+    _thisItemLoading: { state: true },
+    _thisItemLoadingError: { state: true },
   };
 
   // constructor and lifecycle methods =======================
@@ -95,16 +95,20 @@ export class DoteViewmodeOverviewItem extends LitElement {
               // DON'T render child if the child has a parent that's not also tagged by this tag
               // this is so an indirect child of a tag doesn't render twice (once as direct child of the tag,
               // once as direct child of that same tag's child)
-              if (this.itemData.type === 'tag') {
+              if (this.itemData.type === "tag") {
                 // turns out this is not as simple as .includes()
                 // so: get the kid, then check the all of the kids parents
                 // if their only parents are tags, they aren't being rendered anywhere else(except in
                 // another tag but that's wanted) and need to be rendered
                 let shouldRender = true;
                 const child = this.userData.userItems.get_item(childId);
-                for (const parent of child.parents) {
+                for (const parentId of child.parents) {
                   // check every parent
-                  if (this.userData.userItems.get_item(parent).type !== 'tag')
+                  const parent = this.userData.userItems.get_item(parentId);
+                  if (
+                    parent.type !== "tag" &&
+                    parent.parents.includes(this.itemData.id)
+                  )
                     shouldRender = false; // if any aren't a tag, don't render
                 }
 
@@ -137,7 +141,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
             class="dote-overview-itemcard-childrentoggle"
             >${this.childrenMinimized === true
               ? html`<strong>𑾰</strong>`
-              : '━'}</a
+              : "━"}</a
           >`
         : html`<a class="dote-overview-itemcard-childrentoggle">●</a>`}
       <span class="dote-overview-itemcard-title"
@@ -148,7 +152,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
         ? html`<span
             class="dote-overview-itemcard-bodytoggle"
             @click="${this._toggleBodyMinimized}"
-            >${this.bodyMinimized ? '≢ ' : '≡ '}|
+            >${this.bodyMinimized ? "≢ " : "≡ "}|
           </span>`
         : undefined}
       <span class="dote-overview-itemcard-depth"
@@ -212,4 +216,4 @@ export class DoteViewmodeOverviewItem extends LitElement {
   }
 }
 
-customElements.define('dote-viewmode-overview-item', DoteViewmodeOverviewItem);
+customElements.define("dote-viewmode-overview-item", DoteViewmodeOverviewItem);
