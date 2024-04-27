@@ -1,4 +1,4 @@
-import {query_handler, get_range, get_recursive} from './query';
+import { query_handler, get_range, get_recursive } from "./query";
 
 // to use, create an instance of the class on page load, then call instance.initialize(ctime)
 // the argument is the 'ctime' returned by the login/signup api call
@@ -50,9 +50,9 @@ export class Items {
   // returns the created item, with those fields
   async create(fields) {
     const res = await fetch(`/api/data/create/`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: {fields},
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: { fields },
     });
     const item = await res.json();
 
@@ -64,9 +64,9 @@ export class Items {
   // returns the modified item
   async modify(id, fields) {
     const res = await fetch(`/api/data/modify/`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: {id, fields},
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: { id, fields },
     });
     const item = await res.json();
 
@@ -77,8 +77,8 @@ export class Items {
   // takes a uuid(for safety) and completely deletes the item
   async delete(uuid) {
     await fetch(`/api/data/uuid/${uuid}`, {
-      method: 'DELETE',
-      headers: {'Content-Type': 'application/json'},
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
     });
 
     // we need to totally reset the cache here bc the ids will alll get shuffled
@@ -94,13 +94,13 @@ export class Items {
   #ctime;
   #user;
   async initialize(remote_ctime) {
-    const ctime = window.localStorage.getItem('dote-ctime') || 0;
+    const ctime = window.localStorage.getItem("dote-ctime") || 0;
     let cache = [];
     try {
-      cache = JSON.parse(window.localStorage.getItem('dote-items'));
+      cache = JSON.parse(window.localStorage.getItem("dote-items"));
     } catch {
       // fix it
-      window.localStorage.setItem('dote-items', JSON.stringify([]));
+      window.localStorage.setItem("dote-items", JSON.stringify([]));
     }
 
     // check if the cache is safe to trust as correct (no other clients modified data)
@@ -111,16 +111,16 @@ export class Items {
     } else {
       // reset it all
       let res = await fetch(`/api/userdata`, {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
       res = await res.json();
 
       this.#user = res.user;
       this.#items = res.items;
       this.#ctime = Date.now();
-      window.localStorage.setItem('dote-items', JSON.stringify(this.#items));
-      window.localStorage.setItem('dote-ctime', this.#ctime);
+      window.localStorage.setItem("dote-items", JSON.stringify(this.#items));
+      window.localStorage.setItem("dote-ctime", this.#ctime);
     }
   }
 
@@ -135,7 +135,7 @@ export class Items {
 
     this.#ctime = Date.now();
     // cache in browser storage
-    window.localStorage.setItem('dote-items', JSON.stringify(this.#items));
-    window.localStorage.setItem('dote-ctime', this.#ctime);
+    window.localStorage.setItem("dote-items", JSON.stringify(this.#items));
+    window.localStorage.setItem("dote-ctime", this.#ctime);
   }
 }

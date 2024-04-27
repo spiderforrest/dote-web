@@ -133,7 +133,11 @@ function OR_query_handler(items, matches, queries) {
     }
   }
 
-  return matches;
+  // clear dupes
+  return matches.reduce((matches, item) => {
+    if (!matches.includes(item)) matches.push(item)
+    return matches;
+  }, []);
 }
 
 function query_handler(items, queries) {
