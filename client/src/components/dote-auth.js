@@ -2,8 +2,9 @@ import {LitElement, css, html} from 'lit';
 
 export class DoteAuth extends LitElement {
   static properties = {
-    _currentMode: {},
-    _errorMessage: {}
+    _currentMode: {state: true},
+    _errorMessage: {state: true},
+    _loginSuccessful: {state: true}
   };
 
   constructor() {
@@ -11,6 +12,7 @@ export class DoteAuth extends LitElement {
     // default to login
     this._currentMode = "login";
     this._errorMessage = "";
+    this._LoginSuccessful = false;
   }
 
   render() {
@@ -26,6 +28,7 @@ export class DoteAuth extends LitElement {
         </form>
         <a @click="${() => this._currentMode = "signup"}">sign up instead?</a>
         <p id="auth-error-message">${this._errorMessage}</p>
+        ${this._loginSuccessful ? html`<p><i>loading user data...</i></p>` : undefined}
       `;
     } else {
       return html`
@@ -39,6 +42,7 @@ export class DoteAuth extends LitElement {
         </form>
         <a @click="${() => this._currentMode = "login"}">log in instead?</a>
         <p id="auth-error-message">${this._errorMessage}</p>
+        ${this._loginSuccessful ? html`<p><i>loading user data...</i></p>` : undefined}
       `;
     };
   }
@@ -61,6 +65,7 @@ export class DoteAuth extends LitElement {
       // this logs user in
     }).then((res) => res.json()).then((res) => {
       if (res.username !== undefined || res.userUuid !== undefined) {
+        this._loginSuccessful = true;
         const serverData = {username: res.username, userUuid: res.uuid, serverCtime: res.ctime};
         const options = {
           detail: serverData,
@@ -92,6 +97,7 @@ export class DoteAuth extends LitElement {
       // if success, package data returned from server and dispatch it up to dote-client-root
     }).then((res) => res.json()).then((res) => {
       if (res.username !== undefined || res.userUuid !== undefined) {
+        this._loginSuccessful = true;
         const serverData = {username: res.username, userUuid: res.uuid, serverCtime: res.ctime};
         const options = {
           detail: serverData,

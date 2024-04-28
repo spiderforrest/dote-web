@@ -46,13 +46,16 @@ export class DoteClientRoot extends LitElement {
     // TODO: Allie; this is async, and the page should not try to render items until it finishes
     // I can easily add userItems.ready() or something that calls a callback or returns a bool or whatever
     // if that's easier for you
-    userItems.initialize(e.detail.ctime);
-    this.userContext = {
-      userItems,
-      username: e.detail.username,
-      userUuid: e.detail.userUuid,
-    };
-    this.userContext = {...this.userContext, userLoggedIn: true};
+    userItems.initialize(e.detail.ctime)
+      .then(() => {
+        this.userContext = {
+          userItems,
+          username: e.detail.username,
+          userUuid: e.detail.userUuid,
+          userLoggedIn: true
+      }})
+      .catch(console.log("error fetching user data from server! but you did log in successfully?? what's up with that??"));
+    ;
   }
 }
 
