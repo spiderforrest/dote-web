@@ -21,6 +21,10 @@ export class Items {
     return query_handler(this.#items, query);
   }
 
+  get_all() {
+    return this.#items;
+  }
+
   // takes id
   // gives item
   get_item(id) {
