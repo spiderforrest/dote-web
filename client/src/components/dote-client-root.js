@@ -54,8 +54,7 @@ export class DoteClientRoot extends LitElement {
           userUuid: e.detail.userUuid,
           userLoggedIn: true
       }})
-      .catch(console.log("error fetching user data from server! but you did log in successfully?? what's up with that??"));
-    ;
+      .catch((error) => console.log("error fetching user data: ", error));
   }
 }
 

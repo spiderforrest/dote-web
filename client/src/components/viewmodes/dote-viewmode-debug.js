@@ -23,24 +23,12 @@ export class DoteViewmodeDebug extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // once connected to DOM and context is available, fetch first 1000 items
-    this.userData.userItems.fetch_range(0, 1000)
-      .then((result) => this._userItemList = result)
-      .catch((fail) => this._userItemList = "failure");
+    // once connected to DOM and context is available, get first 1000 items
+    this._userItemList = this.userData.userItems.get_range(0, 1000)
   }
 
 
   render() {
-    // if results not yet available, display loading text
-    if (this._userItemList === undefined) {
-      return html`<p><i>fetching data...</i></p>`;
-    }
-
-    // if fetching data fails, display error
-    if (this._userItemList === "failure") {
-      return html`<p><b>Error: fetching data failed.</b></p>`;
-    }
-
     if (this._userItemList.length === 0)
       return html`<p><i>No items.</i></p>`;
     else {
@@ -50,7 +38,7 @@ export class DoteViewmodeDebug extends LitElement {
             ${this._userItemList.map( (item) => html`<li>${JSON.stringify(item)}</li>` )}
           </ul>
           
-          <button @click="${() => console.log(this.userData.userItems.get_cache())}">could you put it in the console instead please</button>
+          <button @click="${() => console.log(this.userData.userItems.get_all())}">could you put it in the console instead please</button>
         </section>
       `;
     }

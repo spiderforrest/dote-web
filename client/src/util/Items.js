@@ -126,6 +126,7 @@ export class Items {
       window.localStorage.setItem("dote-items", JSON.stringify(this.#items));
       window.localStorage.setItem("dote-ctime", this.#ctime);
     }
+    return this.#items;
   }
 
   // updates the internal cache and local storage with new items
