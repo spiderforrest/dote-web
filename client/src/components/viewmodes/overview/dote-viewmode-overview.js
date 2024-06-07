@@ -28,53 +28,37 @@ export class DoteViewmodeOverview extends LitElement {
     this._userItemList = undefined;
   }
 
-  // TODO: Allie; check todo in _loginListener in dote-client-root.js;
-  // this should be replaced since query() is no longer async
   connectedCallback() {
     super.connectedCallback();
 
-    // once connected to DOM and context is available, fetch top-level items
-    // that is, those that are parents of children, but don't have parents of their own
-    //
-    // TODO: dote item spec was updated so that tagged items must have tags as DIRECT parents,
-    // and test data has been edited to reflect this.
-    // This code should be updated to handle this--it currently recursively renders every child based on its "children" list,
-    // so it's now rendering indirect children of tags twice--once as direct children of tag, once as direct children of their parent item
-
+    // once connected to DOM and context is available, fetch "top-level" items;
+    // that is, those that are displayed without parents in the current overview settings
     this._userItemList = this.userData.userItems.query([
       { type: "match", logic: "OR", field: "type", value: "tag" },
       { type: "match", logic: "OR", field: "parents", value: [] },
     ]);
     console.log(this._userItemList);
-    // .then((result) => {
-    //   this._userItemList = result;
-    //   // console.log("top-level items: ", result);
-    // })
-    // .catch((fail) => {
-    //   this._userItemList = 'failure';
-    //   console.log('fetch failed: ', fail);
-    // });
   }
 
   // render and styling ========================================
   render() {
     let itemElements = undefined;
 
-    // if results not yet available, display loading text
+    // If results not yet available, display loading text
     if (this._userItemList === undefined) {
       return html`<p class="dote-overview-loadingtext">
         <i>fetching data...</i>
       </p>`;
     }
 
-    // if fetching data fails, display error
+    // If fetching data fails, display error.
     if (this._userItemList === "failure") {
       return html`<p class="dote-overview-errortext">
         <b>Error: fetching data failed.</b>
       </p>`;
     }
 
-    // top utility bar with item sorting controls, other tools
+    // Top utility bar with item sorting controls, other tools.
     const utilityBar = html`
       <nav class="dote-overview-utilbar">
         <button
@@ -112,9 +96,10 @@ export class DoteViewmodeOverview extends LitElement {
 
     // if parentless items exist, create the elements for them
     if (this._userItemList.length > 0) {
-      // render list of top-level items and give them each their own individual component
-      // these individual components will then create additional components for each of their children
-      // and then those children will render components for their children
+      // Render list of items that are set to display without parents 
+      // and give them each their own individual component.
+      // These individual components will then create additional components for each of their children,
+      // and then those children will render components for their children.
       // circle of life, baby
       itemElements = html`
         ${this._userItemList.map(

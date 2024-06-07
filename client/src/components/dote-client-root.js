@@ -43,9 +43,7 @@ export class DoteClientRoot extends LitElement {
   _loginListener(e) {
     // pull username and UUID from successful login, set in context
     const userItems = new Items();
-    // TODO: Allie; this is async, and the page should not try to render items until it finishes
-    // I can easily add userItems.ready() or something that calls a callback or returns a bool or whatever
-    // if that's easier for you
+    // `initialize` function is async; wait on login screen until it finishes
     userItems.initialize(e.detail.ctime)
       .then(() => {
         this.userContext = {

@@ -33,31 +33,18 @@ export class DoteViewmodeOverviewItem extends LitElement {
     this.childrenMinimized = true;
     this._thisItemLoading = true;
     this._thisItemLoadingError = false;
-    // console.log("(constructor) itemid: ", this.itemId);
   }
 
   // TODO: Allie; check todo in _loginListener in dote-client-root.js;
   // this should be replaced since get_item is no longer async
   connectedCallback() {
     super.connectedCallback();
-    // .get_item(this.itemId)
-    // .then((item) => {
-    //   // console.log("(callback) itemid: ", this.itemId);
-    //   // console.log("(callback) item: ", item);
-    //   // console.log("all cached items: ", this.userData.userItems.get_cache());
-    //   this.itemData = item;
-    //   this._thisItemLoading = false;
-    // })
-    // .catch(() => (this._thisItemLoadingError = true));
-
     this._thisItemLoading = false;
+    this.itemData = this.userData.userItems.get_item(this.itemId);
   }
 
   // render and styling ========================================
   render() {
-    // TODO: Allie; check todo in _loginListener in dote-client-root.js; no idea if this should be here
-    this.itemData = this.userData.userItems.get_item(this.itemId);
-
     // the HTML content displayed in the item UI section where an item's children go when it's open
     let childContentEl = undefined;
     // the HTML content displayed in the item UI section where an item's children go when it's minimized
@@ -119,7 +106,7 @@ export class DoteViewmodeOverviewItem extends LitElement {
                   >
                   </dote-viewmode-overview-item>`;
                 } else {
-                  return html`<p>blurghghhtghgh</p>`;
+                  return null;
                 }
               } else {
                 // if the item whose children we're rendering isn't a tag,
