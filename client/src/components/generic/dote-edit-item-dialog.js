@@ -22,27 +22,63 @@ export class DoteEditItemDialog extends LitElement {
   }
 
   render() { 
+    // Set up add/edit dialogue HTML elements, whichever one is applicable
+    let popupContent;
+    if (this.operationType === "add") {
+      popupContent = html`
+        <h4>Create Item</h4>
+        <hr/>
+        <label for="add-edit-item-dialog-itemtype"><strong>Item Type: </strong></label>
+          <select
+            id="add-edit-item-dialog-itemtype"
+            name="add-edit-item-dialog-itemtype"
+            required
+          >
+            <option value="todo" selected>Task</option>
+            <option value="note">Note</option>
+            <option value="tag">Tag</option>
+          </select>
+        <hr/>
+        <input type="text" id="add-edit-item-dialog-title" placeholder="item title..." />
+        <hr/>
+        <textarea id="add-edit-item-dialog-body" placeholder="item body..."></textarea>
+        <hr/>
+        <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
+        <p>placeholder, gonna have to make an item selection dialog element or something</p>
+        <button>Add Item</button>
+        <button>cancel</button>
+      `;
+    }
+
+    if (this.operationType === "edit") {
+      popupContent = html`
+        <h4>Modifying Item {iteminfohere}</h4>
+        <hr/>
+        <label for="add-edit-item-dialog-itemtype"><strong>Item Type: </strong></label>
+          <select
+            id="add-edit-item-dialog-itemtype"
+            name="add-edit-item-dialog-itemtype"
+            required
+          >
+            <option value="todo" selected>Task</option>
+            <option value="note">Note</option>
+            <option value="tag">Tag</option>
+          </select>
+        <hr/>
+        <input type="text" id="add-edit-item-dialog-title" placeholder="item title..." />
+        <hr/>
+        <textarea id="add-edit-item-dialog-body" placeholder="item body..."></textarea>
+        <hr/>
+        <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
+        <p>placeholder, gonna have to make an item selection dialog element or something</p>
+        <button>Modify Item</button>
+        <button>cancel</button>
+      `;
+    }
+
     return html`
       <section class="dote-add-edit-item-dialog-popup">
-        <h4>${this.operationType === "add" ? "Create Item" : "Edit Item"}</h4>
-          <hr/>
-          <label for="add-edit-item-dialog-itemtype"><strong>Item Type: </strong></label>
-            <select
-              id="add-edit-item-dialog-itemtype"
-              name="add-edit-item-dialog-itemtype"
-              required
-            >
-              <option value="todo" selected>Task</option>
-              <option value="note">Note</option>
-              <option value="tag">Tag</option>
-            </select>
-          <hr/>
-          <input type="text" id="add-edit-item-dialog-title" placeholder="item title..." />
-          <hr/>
-          <textarea id="add-edit-item-dialog-body" placeholder="item body..."></textarea>
-          <hr/>
-          <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
-          <p>placeholder, gonna have to make an item selection dialog element or something</p>
+        ${popupContent}
       </section>
     `;
   }
