@@ -15,7 +15,6 @@ export class DoteEditItemDialog extends LitElement {
   constructor() {
     super();
     this.operationType = "add"; // default to add new item if not specified via attribute
-    
   }
 
   connectedCallback() {
@@ -23,12 +22,27 @@ export class DoteEditItemDialog extends LitElement {
   }
 
   render() { 
-
-
-
     return html`
       <section class="dote-add-edit-item-dialog-popup">
         <h4>${this.operationType === "add" ? "Create Item" : "Edit Item"}</h4>
+          <hr/>
+          <label for="add-edit-item-dialog-itemtype"><strong>Item Type: </strong></label>
+            <select
+              id="add-edit-item-dialog-itemtype"
+              name="add-edit-item-dialog-itemtype"
+              required
+            >
+              <option value="todo" selected>Task</option>
+              <option value="note">Note</option>
+              <option value="tag">Tag</option>
+            </select>
+          <hr/>
+          <input type="text" id="add-edit-item-dialog-title" placeholder="item title..." />
+          <hr/>
+          <textarea id="add-edit-item-dialog-body" placeholder="item body..."></textarea>
+          <hr/>
+          <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
+          <p>placeholder, gonna have to make an item selection dialog element or something</p>
       </section>
     `;
   }
@@ -36,7 +50,14 @@ export class DoteEditItemDialog extends LitElement {
   // styling =================================
   static styles = css`
     .dote-add-edit-item-dialog-popup {
-      
+      position: fixed;
+      bottom: 0; left: 2em; right: 2em;
+      text-align: center;
+      min-width: 80%;
+      max-width: 100%;
+      max-height: 80%;
+      border: thin dotted darkgray;
+      background-color: lightgray;
     }
   `;
 }
