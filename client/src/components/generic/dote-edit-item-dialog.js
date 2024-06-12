@@ -26,7 +26,7 @@ export class DoteEditItemDialog extends LitElement {
     let popupContent;
     if (this.operationType === "add") {
       popupContent = html`
-        <h4>Create Item</h4>
+        <h4 class="add-edit-item-dialog-popuptitle">Create Item</h4>
         <hr/>
         <label for="add-edit-item-dialog-itemtype"><strong>Item Type: </strong></label>
           <select
@@ -46,13 +46,13 @@ export class DoteEditItemDialog extends LitElement {
         <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
         <p>placeholder, gonna have to make an item selection dialog element or something</p>
         <button>Add Item</button>
-        <button @click="${this._handleCloseDialog}">cancel</button>
+        <button @click="${this._handleCloseDialog}">Cancel and discard item</button>
       `;
     }
 
     if (this.operationType === "edit") {
       popupContent = html`
-        <h4>Modifying Item {iteminfohere}</h4>
+        <h4 class="add-edit-item-dialog-popuptitle">Modifying Item {iteminfohere}</h4>
         <hr/>
         <label for="add-edit-item-dialog-itemtype"><strong>Item Type: </strong></label>
           <select
@@ -72,7 +72,7 @@ export class DoteEditItemDialog extends LitElement {
         <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
         <p>placeholder, gonna have to make an item selection dialog element or something</p>
         <button>Modify Item</button>
-        <button @click="${this._handleCloseDialog}">cancel</button>
+        <button @click="${this._handleCloseDialog}">Cancel and discard changes</button>
       `;
     }
 
@@ -97,9 +97,16 @@ export class DoteEditItemDialog extends LitElement {
       border: thin dotted darkgray;
       background-color: lightgray;
     }
+
+    .add-edit-item-dialog-popuptitle {
+      margin-top: .5em;
+      margin-bottom: .5em;
+    }
   `;
 
-  // event listeners
+  // event listeners =========================
+  
+  // for closing dialog without creating/modifying item, discarding changes
   _handleCloseDialog() {
     const options = {
       bubbles: true,
