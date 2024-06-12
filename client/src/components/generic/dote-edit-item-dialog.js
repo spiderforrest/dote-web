@@ -5,6 +5,7 @@ import {ContextConsumer} from '@lit/context';
 
 import {userContextKey} from '../context/dote-context-objects.js';
 import {Items} from '../../util/Items.js';
+import {DoteItemSelectlist} from './dote-item-selectlist.js';
 
 export class DoteEditItemDialog extends LitElement {
   static properties = {
@@ -45,8 +46,15 @@ export class DoteEditItemDialog extends LitElement {
         <hr/>
         <textarea id="add-edit-item-dialog-body" placeholder="item body..."></textarea>
         <hr/>
-        <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
-        <p>placeholder, gonna have to make an item selection dialog element or something</p>
+        <div class="add-edit-item-dialog-relationships-section">
+          <h3><strong>Relationships: </strong></h3>
+            <h4>Parents of this item:</h4>
+            <dote-item-selectlist></dote-item-selectlist>
+            <hr/>
+            <h4>Children of this item:</h4>
+            <dote-item-selectlist></dote-item-selectlist>
+        </div>
+        <hr/>
         <button>Add Item</button>
         <button @click="${this._handleCloseDialog}">Cancel and discard item</button>
       `;
@@ -71,8 +79,9 @@ export class DoteEditItemDialog extends LitElement {
         <hr/>
         <textarea id="add-edit-item-dialog-body" placeholder="item body..."></textarea>
         <hr/>
-        <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
+        <h6><strong>Relationships: </strong></h6>
         <p>placeholder, gonna have to make an item selection dialog element or something</p>
+        <hr/>
         <button>Modify Item</button>
         <button @click="${this._handleCloseDialog}">Cancel and discard changes</button>
       `;

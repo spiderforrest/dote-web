@@ -34,15 +34,13 @@ export class DoteItemSelectlist extends LitElement {
       itemSelectListEl = html`<p><i>No items</i></p>`;
     } else {
       itemSelectListEl = html`
-        <select multiple size=10 class="dote-itemselectlist">
-          ${this._userData.userItems.get_all().map(
+        <select multiple size=7 class="dote-itemselectlist">
+          ${this.userData.userItems.get_all().map(
             (item) =>
-              html`<option
-                label=${item.title}
-                value=${item.id}
-              >
-                ${item.title} | ${item.type}
-              </option>`)}
+              html`
+                <option value=${item.id}>
+                  ${item.title} | ${item.type}
+                </option>`)}
         </select>`
     }
     return itemSelectListEl;

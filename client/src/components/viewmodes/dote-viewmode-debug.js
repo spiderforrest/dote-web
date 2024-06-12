@@ -23,8 +23,8 @@ export class DoteViewmodeDebug extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // once connected to DOM and context is available, get first 1000 items
-    this._userItemList = this.userData.userItems.get_range(0, 1000)
+    // once connected to DOM and context is available, get all items
+    this._userItemList = this.userData.userItems.get_all();
   }
 
 
