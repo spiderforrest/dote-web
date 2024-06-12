@@ -46,7 +46,7 @@ export class DoteEditItemDialog extends LitElement {
         <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
         <p>placeholder, gonna have to make an item selection dialog element or something</p>
         <button>Add Item</button>
-        <button>cancel</button>
+        <button @click="${this._handleCloseDialog}">cancel</button>
       `;
     }
 
@@ -72,7 +72,7 @@ export class DoteEditItemDialog extends LitElement {
         <label for="add-edit-item-dialog-relationships"><strong>Relationships: </strong></label>
         <p>placeholder, gonna have to make an item selection dialog element or something</p>
         <button>Modify Item</button>
-        <button>cancel</button>
+        <button @click="${this._handleCloseDialog}">cancel</button>
       `;
     }
 
@@ -88,6 +88,8 @@ export class DoteEditItemDialog extends LitElement {
     .dote-add-edit-item-dialog-popup {
       position: fixed;
       bottom: 0; left: 2em; right: 2em;
+      padding: .5em .15em .5em;
+      line-height: .1em;
       text-align: center;
       min-width: 80%;
       max-width: 100%;
@@ -96,6 +98,15 @@ export class DoteEditItemDialog extends LitElement {
       background-color: lightgray;
     }
   `;
+
+  // event listeners
+  _handleCloseDialog() {
+    const options = {
+      bubbles: true,
+      composed: true,
+    };
+    this.dispatchEvent(new CustomEvent("userCloseAddEditDialog", options));
+  }
 }
 
 customElements.define('dote-edit-item-dialog', DoteEditItemDialog);

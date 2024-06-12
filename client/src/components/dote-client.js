@@ -27,14 +27,18 @@ export class DoteClient extends LitElement {
   // constructor and lifecycle methods =======================
   constructor() {
     super();
-    this.addOrEditItemDialogOpen = false;
+    this._addOrEditItemDialogOpen = false;
   }
 
   // render and event listeners =====================
   render() {
     let fromBottomDialogPanel = undefined;
-    if (this.addOrEditItemDialogOpen) {
-      fromBottomDialogPanel = html`<dote-edit-item-dialog operationType=${this._addOrEditItemData.buttonClicked} existingItemData=${this._addOrEditItemData.existingItemData}></dote-edit-item-dialog>`
+    if (this._addOrEditItemDialogOpen) {
+      fromBottomDialogPanel = html`<dote-edit-item-dialog 
+          operationType=${this._addOrEditItemData.buttonClicked} 
+          existingItemData=${this._addOrEditItemData.existingItemData}
+          @userCloseAddEditDialog=${this._closeAddOrEditItemDialog}>
+        </dote-edit-item-dialog>`
     }
 
 
@@ -50,12 +54,12 @@ export class DoteClient extends LitElement {
   }
 
   _openAddOrEditItemDialog(e) {
-    this.addOrEditItemDialogOpen = true;
+    this._addOrEditItemDialogOpen = true;
     this._addOrEditItemData = e.detail;
   }
 
   _closeAddOrEditItemDialog(e) {
-    this.addOrEditItemDialogOpen = false;
+    this._addOrEditItemDialogOpen = false;
   }
 }
 
