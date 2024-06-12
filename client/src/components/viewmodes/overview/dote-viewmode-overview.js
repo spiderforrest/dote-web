@@ -1,3 +1,5 @@
+// Overview viewmode component--see design docs for details.
+  
 import { LitElement, css, html } from "lit";
 import { ContextConsumer } from "@lit/context";
 

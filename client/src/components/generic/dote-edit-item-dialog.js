@@ -1,3 +1,5 @@
+// Popup dialog that allows users to add a new item or edit an existing one.
+
 import {LitElement, css, html} from 'lit';
 import {ContextConsumer} from '@lit/context';
 

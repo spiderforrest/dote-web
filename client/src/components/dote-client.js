@@ -58,7 +58,7 @@ export class DoteClient extends LitElement {
     this._addOrEditItemData = e.detail;
   }
 
-  _closeAddOrEditItemDialog(e) {
+  _closeAddOrEditItemDialog() {
     this._addOrEditItemDialogOpen = false;
   }
 }
