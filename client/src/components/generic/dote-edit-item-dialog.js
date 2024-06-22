@@ -49,7 +49,7 @@ export class DoteEditItemDialog extends LitElement {
         <div class="add-edit-item-dialog-relationships-section">
           <h3><strong>Relationships: </strong></h3>
             <h4>Parents of this item:</h4>
-            <dote-item-selectlist></dote-item-selectlist>
+            <dote-item-selectlist selecteditemids=${JSON.stringify([1,2,3])}></dote-item-selectlist>
             <hr/>
             <h4>Children of this item:</h4>
             <dote-item-selectlist></dote-item-selectlist>

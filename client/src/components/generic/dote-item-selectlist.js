@@ -1,4 +1,4 @@
-// Dropdown list that retrieves all of a user's items and allows them to select an arbitrary number of them.
+// Dropdown list that retrieves all of a user's items and allows selecting an arbitrary number of them.
 
 import { LitElement, css, html } from "lit";
 import { ContextConsumer } from "@lit/context";
@@ -18,9 +18,14 @@ export class DoteItemSelectlist extends LitElement {
     return this._userDataContext.value;
   }
 
+  static properties = {
+    selectedItemIDs: { type: Array }
+  }
+
   // constructor and lifecycle methods =======================
   constructor() {
     super();
+    this.selectedItemIDs = [];
   }
 
   connectedCallback() {
@@ -38,7 +43,7 @@ export class DoteItemSelectlist extends LitElement {
           ${this.userData.userItems.get_all().map(
             (item) =>
               html`
-                <option value=${item.id}>
+                <option value=${item.id} ?selected=${this.selectedItemIDs.includes(item.id)}>
                   ${item.title} | ${item.type}
                 </option>`)}
         </select>`
