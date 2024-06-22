@@ -1,12 +1,11 @@
-// Generic item element for rendering cascading list-style viewmodes.
-// Renders item that can show/hide item bodies and children.
-
 import { LitElement, css, html } from "lit";
 import { ContextConsumer } from "@lit/context";
 
 import { userContextKey } from "../context/dote-context-objects.js";
 import { Items } from "../../util/Items.js";
 
+// Generic item element for rendering cascading list-style viewmodes.
+// Renders item that can show/hide item bodies and children.
 export class DoteListViewmodeItem extends LitElement {
   // context, getters, and properties =======================
   _userDataContext = new ContextConsumer(this, {
@@ -86,33 +85,33 @@ export class DoteListViewmodeItem extends LitElement {
               // DON'T render child if the child has a parent that's not also tagged by this tag
               // this is so an indirect child of a tag doesn't render twice (once as direct child of the tag,
               // once as direct child of that same tag's child)
-              if (this.itemData.type === "tag") {
-                // turns out this is not as simple as .includes()
-                // so: get the kid, then check the all of the kids parents
-                // if their only parents are tags, they aren't being rendered anywhere else(except in
-                // another tag but that's wanted) and need to be rendered
-                let shouldRender = true;
-                const child = this.userData.userItems.get_item(childId);
-                for (const parentId of child.parents) {
-                  // check every parent
-                  const parent = this.userData.userItems.get_item(parentId);
-                  if (
-                    parent.type !== "tag" &&
-                    parent.parents.includes(this.itemData.id)
-                  )
-                    shouldRender = false; // if any aren't a tag, don't render
-                }
+              // if (this.itemData.type === "tag") {
+              //   // turns out this is not as simple as .includes()
+              //   // so: get the kid, then check the all of the kids parents
+              //   // if their only parents are tags, they aren't being rendered anywhere else(except in
+              //   // another tag but that's wanted) and need to be rendered
+              //   let shouldRender = true;
+              //   const child = this.userData.userItems.get_item(childId);
+              //   for (const parentId of child.parents) {
+              //     // check every parent
+              //     const parent = this.userData.userItems.get_item(parentId);
+              //     if (
+              //       parent.type !== "tag" &&
+              //       parent.parents.includes(this.itemData.id)
+              //     )
+              //       shouldRender = false; // if any aren't a tag, don't render
+              //   }
 
-                if (shouldRender) {
-                  return html`<dote-list-viewmode-item
-                    itemid=${childId}
-                    itemdepth=${this.itemDepth + 1}
-                  >
-                  </dote-list-viewmode-item>`;
-                } else {
-                  return null;
-                }
-              } else {
+              //   if (shouldRender) {
+              //     return html`<dote-list-viewmode-item
+              //       itemid=${childId}
+              //       itemdepth=${this.itemDepth + 1}
+              //     >
+              //     </dote-list-viewmode-item>`;
+              //   } else {
+              //     return null;
+              //   }
+              // } else {
                 // if the item whose children we're rendering isn't a tag,
                 // we don't need to worry about it
                 return html`<dote-list-viewmode-item
@@ -120,7 +119,7 @@ export class DoteListViewmodeItem extends LitElement {
                   itemdepth=${this.itemDepth + 1}
                 >
                 </dote-list-viewmode-item>`;
-              }
+              // }
             }));
       }
     }
@@ -208,3 +207,5 @@ export class DoteListViewmodeItem extends LitElement {
 }
 
 customElements.define("dote-list-viewmode-item", DoteListViewmodeItem);
+
+
