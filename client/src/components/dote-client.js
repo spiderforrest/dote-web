@@ -3,7 +3,7 @@ import {ContextProvider, ContextConsumer} from '@lit/context';
 
 import {userContextKey} from './context/dote-context-objects.js';
 import {DoteSidebarMenu} from './dote-sidebar-menu.js';
-import {DoteViewmodeSelector} from './dote-viewmode-selector.js';
+import {DoteViewmode} from './dote-viewmode.js';
 import {DoteAuth} from './dote-auth.js';
 import {DoteEditItemDialog} from './generic/dote-edit-item-dialog.js';
 
@@ -47,7 +47,7 @@ export class DoteClient extends LitElement {
     } else {
       return html`
         <dote-sidebar-menu></dote-sidebar-menu>
-        <dote-viewmode-selector @userAddOrEditItemGeneric=${this._openAddOrEditItemDialog}></dote-viewmode-selector>
+        <dote-viewmode @userAddOrEditItemGeneric=${this._openAddOrEditItemDialog}></dote-viewmode>
         ${fromBottomDialogPanel}
       `;
     }

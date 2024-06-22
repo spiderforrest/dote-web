@@ -60,42 +60,6 @@ export class DoteViewmodeOverview extends LitElement {
       </p>`;
     }
 
-    // Top utility bar with item sorting controls, other tools.
-    const utilityBar = html`
-      <nav class="dote-overview-utilbar">
-        <button
-          @click="${this._handleCreateItem}"
-          class="dote-overview-utilbar-additem"
-        >
-          Add item (placeholder)
-        </button>
-        <button
-          @click="${this._handleEditItem}"
-          class="dote-overview-utilbar-modifyitem"
-        >
-          Modify item (placeholder)
-        </button>
-        <span class="dote-overview-utilbar-midspacer"></span>
-        <div class="dote-overview-utilbar-sortselect">
-          <label for="overview-sort-select">sort by (placeholder): </label>
-          <select
-            id="overview-sort-select"
-            name="overview-sort-select"
-            required
-          >
-            <option value="in-progress" selected>in progress</option>
-            <option value="by-tag">by tag</option>
-          </select>
-        </div>
-        <input
-          class="dote-overview-utilbar-searchbar"
-          placeholder="search items...(placeholder)"
-        />
-      </nav>
-
-      <hr />
-    `;
-
     // if parentless items exist, create the elements for them
     if (this._userItemList.length > 0) {
       // Render list of items that are set to display without parents 
@@ -119,7 +83,7 @@ export class DoteViewmodeOverview extends LitElement {
       </p>`;
     }
 
-    return html` ${utilityBar} ${itemElements} `;
+    return html`${itemElements}`;
   }
 
   // styling =================================
@@ -130,65 +94,11 @@ export class DoteViewmodeOverview extends LitElement {
       background-color: pink;
     }
 
-    .dote-overview-utilbar {
-      display: flex;
-      flex-flow; row nowrap;
-      justify-content: space-around;
-      align-items: center;
-      gap: 1em;
-    }
-
-    .dote-overview-utilbar-additem {
-      order: 1;
-    }
-
-    .dote-overview-utilbar-modifyitem {
-      order: 2;
-    }
-
-    .dote-overview-utilbar-midspacer {
-      order: 3;
-      flex-grow: 1;
-    }
-
-    .dote-overview-utilbar-sortselect {
-      order: 4;
-    }
-
-    .dote-overview-utilbar-searchbar {
-      order: 5;
-    }
-
     .dote-overview-noitems {
       border: thick dashed grey;
       background-color: lightgray;
     }
   `;
-
-  // event handlers ==================================================
-  _handleCreateItem() {
-    const options = {
-      detail: {
-        buttonClicked: "add",
-      },
-      bubbles: true,
-      composed: true,
-    };
-    this.dispatchEvent(new CustomEvent("userAddOrEditItemGeneric", options));
-  }
-
-  _handleEditItem() {
-    // TODO: actually send the edited item info w/the event
-    const options = {
-      detail: {
-        buttonClicked: "edit",
-        existingItemData: "placeholder",
-      },
-      bubbles: true,
-      composed: true,
-    };
-    this.dispatchEvent(new CustomEvent("userAddOrEditItemGeneric", options));
-  }
 }
 
 customElements.define("dote-viewmode-overview", DoteViewmodeOverview);

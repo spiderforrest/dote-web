@@ -52,7 +52,7 @@ export class DoteViewmodeSelector extends LitElement {
         currentViewmodeElement = html`<p><i>Select a viewmode.</i></p>`;
     }
 
-    return html`
+    let viewmodeSelectorEl = html`
       <nav>
         <ul class="dote-viewmode-selector-list">
           ${this._viewmodeList
@@ -72,8 +72,10 @@ export class DoteViewmodeSelector extends LitElement {
               `;
             })}
         </ul>
-      </nav>
-      <hr />
+      </nav>`;
+
+    return html`
+      ${viewmodeSelectorEl}
       <section class="dote-viewmode-container">
         ${currentViewmodeElement}
       </section>
