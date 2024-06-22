@@ -1,4 +1,4 @@
-// Generic item element for rendering in cascading list-style viewmodes.
+// Generic item element for rendering cascading list-style viewmodes.
 // Renders item that can show/hide item bodies and children.
 
 import { LitElement, css, html } from "lit";
