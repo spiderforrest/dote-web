@@ -5,7 +5,6 @@ import { ContextConsumer } from "@lit/context";
 
 import { userContextKey } from "./context/dote-context-objects.js";
 import { DoteViewmodeDebug } from "./viewmodes/dote-viewmode-debug.js";
-import { DoteViewmodeOverview } from "./viewmodes/overview/dote-viewmode-overview.js";
 import { DoteListViewmode } from "./viewmodes/dote-list-viewmode.js";
 import { Items } from "../util/Items.js";
 
@@ -33,7 +32,6 @@ export class DoteViewmode extends LitElement {
     // for now, doing it manually
     this._viewmodeList = [
       {displayName: 'DEBUG', elementName: 'dote-viewmode-debug'},
-      {displayName: 'OVERVIEW', elementName: 'dote-viewmode-overview'},
       {displayName: 'LIST', elementName: 'dote-list-viewmode'},
     ];
 
@@ -47,9 +45,6 @@ export class DoteViewmode extends LitElement {
     switch (this.currentViewmode) {
       case 'DEBUG':
         currentViewmodeElement = html`<dote-viewmode-debug></dote-viewmode-debug>`;
-        break;
-      case 'OVERVIEW':
-        currentViewmodeElement = html`<dote-viewmode-overview></dote-viewmode-overview>`;
         break;
       case 'LIST':
         currentViewmodeElement = html`<dote-list-viewmode></dote-list-viewmode>`;
