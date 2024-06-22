@@ -3,13 +3,13 @@
     "username": "test",
     "password": "$2b$10$vUQEtKmbFZTP2l7a.QCnluor2Joo5w.JHtDVDgOnaBsXGu6q.DdBe",
     "uuid": "5cd57171-58b6-41b5-9ba9-aa61adaeb0d4",
-    "ctime": 1713053730612,
+    "ctime": 1713053730612
   },
   {
     "username": "tmp",
     "password": "$2b$10$zmpC4PSlRaYRtySX1gEMtepZc4xfR4ic/g2Won.DMvmkMrZN/75fW",
     "uuid": "dd689bb7-c285-42a6-9ce7-121e2571fe78",
-    "ctime": 1714168119473,
+    "ctime": 1714168119473
   },
   {
     "username": "emptylist",
