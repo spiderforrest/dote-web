@@ -4,8 +4,8 @@ import { ContextConsumer } from "@lit/context";
 import { userContextKey } from "../context/dote-context-objects.js";
 import { Items } from "../../util/Items.js";
 
-// Mixin for rendering cascading list-style viewmodes.
-// Use to create subclasses for specific item types.
+// Mixin for rendering cascading items in list-type viewmodes.
+// Use to create subclasses for rendering specific item types.
 const DoteListViewmodeItemMixin = (LitElement) => class extends LitElement {
   // context, getters, and properties =======================
   _userDataContext = new ContextConsumer(this, {
@@ -93,6 +93,7 @@ const DoteListViewmodeItemMixin = (LitElement) => class extends LitElement {
   }
 }
 
+// Component for rendering todo items in a cascading list-style viewmode.
 export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitElement) {
   constructor() {
     super();
@@ -199,6 +200,7 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
 
 customElements.define("dote-list-viewmode-todo-item", DoteListViewmodeTodoItem);
 
+// Component for rendering note items in a cascading list-style viewmode.
 export class DoteListViewmodeNoteItem extends DoteListViewmodeItemMixin(LitElement) {
   constructor() {
     super();
@@ -305,6 +307,7 @@ export class DoteListViewmodeNoteItem extends DoteListViewmodeItemMixin(LitEleme
 
 customElements.define("dote-list-viewmode-note-item", DoteListViewmodeNoteItem);
 
+// Component for rendering tag items in cascading list-style viewmodes.
 export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElement) {
   constructor() {
     super();
