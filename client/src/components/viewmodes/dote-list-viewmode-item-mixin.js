@@ -383,6 +383,10 @@ export class DoteListViewmodeNoteItem extends DoteListViewmodeItemMixin(LitEleme
         margin-top: 0.25em;
         padding-left: 0.5em;
         background-color: lightgrey;
+
+      .dote-itemcard-ctime {
+        font-size: 0.8em;
+        font-style: italic;
       }
     `;
   }
@@ -523,6 +527,11 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
         margin-top: 0.25em;
         padding-left: 0.5em;
         background-color: lightgrey;
+      }
+
+      .dote-itemcard-ctime {
+        font-size: 0.8em;
+        font-style: italic;
       }
     `;
   }
