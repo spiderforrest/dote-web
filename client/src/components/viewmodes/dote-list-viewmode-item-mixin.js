@@ -46,12 +46,13 @@ const DoteListViewmodeItemMixin = (LitElement) => class extends LitElement {
   // rendering performed in extended subclasses for different itemtypes
 
   // styling ===============
+  // these items may be overridden by subclasses below.
   static styles = css`
     :host {
       display: block;
       border-left: thin solid grey;
       border-bottom: thin solid grey;
-      border-top: thin dashed lightgray;
+      border-top: thin dashed gray;
       border-radius: 0 0 0 1em;
       margin-left: 0.75em;
       margin-bottom: 0.25em;
@@ -76,6 +77,11 @@ const DoteListViewmodeItemMixin = (LitElement) => class extends LitElement {
       margin-top: 0.25em;
       padding-left: 0.5em;
       background-color: lightgrey;
+    }
+
+    .dote-itemcard-ctime {
+      font-size: 0.8em;
+      font-style: italic;
     }
 
     .dote-itemcard-minimized-children {
@@ -175,7 +181,7 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
       <span class="dote-itemcard-title"
         ><strong>${this.itemData.title}</strong> |
       </span>
-      <span class="dote-itemcard-type">${this.itemData.type} [component type: todo]| </span>
+      <span class="dote-itemcard-type">${this.itemData.type} | </span>
       ${this.itemData.body
         ? html`<span
             class="dote-itemcard-bodytoggle"
@@ -196,6 +202,49 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
       ${this.childrenMinimized === false ? childContentEl : minimizedChildrenEl}
     `;
     }
+
+    // styling ==================
+    static styles = css`
+      :host {
+        display: block;
+        border-left: thin solid grey;
+        border-bottom: thin solid grey;
+        border-top: thin solid gray;
+        border-radius: 0 0 0 1em;
+        margin-left: 0.75em;
+        margin-bottom: 0.25em;
+        margin-top: 0.25em;
+        padding-left: 0.5em;
+        padding-top: 0.15em;
+        padding-bottom: 0.15em;
+      }
+
+      .dote-itemcard-childrentoggle {
+        margin-left: 0.25em;
+        margin-right: 0.25em;
+      }
+
+      .dote-itemcard-title {
+        margin-left: 0.25em;
+      }
+
+      .dote-itemcard-body-data {
+        border: thin solid gold;
+        margin-bottom: 0.25em;
+        margin-top: 0.25em;
+        padding-left: 0.5em;
+        background-color: lightgrey;
+      }
+
+      .dote-itemcard-ctime {
+        font-size: 0.8em;
+        font-style: italic;
+      }
+
+      .dote-itemcard-minimized-children {
+        margin: 0.25em 0em 0.25em 1em;
+      }
+    `;
   }
 
 customElements.define("dote-list-viewmode-todo-item", DoteListViewmodeTodoItem);
@@ -282,7 +331,7 @@ export class DoteListViewmodeNoteItem extends DoteListViewmodeItemMixin(LitEleme
       <span class="dote-itemcard-title"
         ><strong>${this.itemData.title}</strong> |
       </span>
-      <span class="dote-itemcard-type">${this.itemData.type} [component type: note]| </span>
+      <span class="dote-itemcard-type">${this.itemData.type} | </span>
       ${this.itemData.body
         ? html`<span
             class="dote-itemcard-bodytoggle"
@@ -303,6 +352,39 @@ export class DoteListViewmodeNoteItem extends DoteListViewmodeItemMixin(LitEleme
       ${this.childrenMinimized === false ? childContentEl : minimizedChildrenEl}
     `;
     }
+
+    // styling ===============
+    static styles = css`
+      :host {
+        display: block;
+        border-left: medium double grey;
+        border-bottom: medium double grey;
+        border-top: medium solid gray;
+        margin-left: 0.75em;
+        margin-bottom: 0.25em;
+        margin-top: 0.25em;
+        padding-left: 0.5em;
+        padding-top: 0.15em;
+        padding-bottom: 0.15em;
+      }
+
+      .dote-itemcard-childrentoggle {
+        margin-left: 0.25em;
+        margin-right: 0.25em;
+      }
+
+      .dote-itemcard-title {
+        margin-left: 0.25em;
+      }
+
+      .dote-itemcard-body-data {
+        border: thin solid gold;
+        margin-bottom: 0.25em;
+        margin-top: 0.25em;
+        padding-left: 0.5em;
+        background-color: lightgrey;
+      }
+    `;
   }
 
 customElements.define("dote-list-viewmode-note-item", DoteListViewmodeNoteItem);
@@ -389,7 +471,7 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       <span class="dote-itemcard-title"
         ><strong>${this.itemData.title}</strong> |
       </span>
-      <span class="dote-itemcard-type">${this.itemData.type} [component type: tag] | </span>
+      <span class="dote-itemcard-type">${this.itemData.type}  | </span>
       ${this.itemData.body
         ? html`<span
             class="dote-itemcard-bodytoggle"
@@ -410,6 +492,39 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       ${this.childrenMinimized === false ? childContentEl : minimizedChildrenEl}
     `;
     }
+
+    // styling ===============
+    static styles = css`
+      :host {
+        display: block;
+        border-left: thick dashed grey;
+        border-bottom: thick dashed grey;
+        border-top: thick dashed grey;
+        margin-left: 0.75em;
+        margin-bottom: 0.25em;
+        margin-top: 0.25em;
+        padding-left: 0.5em;
+        padding-top: 0.15em;
+        padding-bottom: 0.15em;
+      }
+
+      .dote-itemcard-childrentoggle {
+        margin-left: 0.25em;
+        margin-right: 0.25em;
+      }
+
+      .dote-itemcard-title {
+        margin-left: 0.25em;
+      }
+
+      .dote-itemcard-body-data {
+        border: thin solid gold;
+        margin-bottom: 0.25em;
+        margin-top: 0.25em;
+        padding-left: 0.5em;
+        background-color: lightgrey;
+      }
+    `;
   }
 
 customElements.define("dote-list-viewmode-tag-item", DoteListViewmodeTagItem);
