@@ -62,6 +62,41 @@ export class DoteListViewmode extends LitElement {
       </p>`;
     }
 
+    // Top utility bar with item sorting controls, other tools
+    let viewmodeUtilityBarEl = html`
+      <nav class="dote-utilbar">
+        <button
+          @click="${this._handleCreateItem}"
+          class="dote-utilbar-additem"
+        >
+          Add item (placeholder)
+        </button>
+        <button
+          @click="${this._handleEditItem}"
+          class="dote-utilbar-modifyitem"
+        >
+          Modify item (placeholder)
+        </button>
+        <span class="dote-utilbar-midspacer"></span>
+        <div class="dote-utilbar-sortselect">
+          <label for="sort-select">sort by (placeholder): </label>
+          <select
+            id="sort-select"
+            name="sort-select"
+            required
+          >
+            <option value="in-progress" selected>in progress</option>
+            <option value="by-tag">by tag</option>
+          </select>
+        </div>
+        <input
+          class="dote-utilbar-searchbar"
+          placeholder="search items...(placeholder)"
+        />
+      </nav>
+      <hr />
+    `;
+
     // If there are items to display, create elements for them
     if (this._userItemList.length > 0) {
       // Items rendered here recursively render their children;
@@ -102,7 +137,10 @@ export class DoteListViewmode extends LitElement {
       </p>`;
     }
 
-    return html`${itemElements}`;
+    return html`
+      ${viewmodeUtilityBarEl}
+      ${itemElements}
+      `;
   }
 
   // styling =================================
@@ -117,7 +155,61 @@ export class DoteListViewmode extends LitElement {
       border: thick dashed grey;
       background-color: lightgray;
     }
+
+    .dote-utilbar {
+      display: flex;
+      flex-flow; row nowrap;
+      justify-content: space-around;
+      align-items: center;
+      gap: 1em;
+    }
+
+    .dote-utilbar-additem {
+      order: 1;
+    }
+
+    .dote-utilbar-modifyitem {
+      order: 2;
+    }
+
+    .dote-utilbar-midspacer {
+      order: 3;
+      flex-grow: 1;
+    }
+
+    .dote-utilbar-sortselect {
+      order: 4;
+    }
+
+    .dote-utilbar-searchbar {
+      order: 5;
+    }
   `;
+
+  // event handlers ==================================================
+  _handleCreateItem() {
+    const options = {
+      detail: {
+        buttonClicked: "add",
+      },
+      bubbles: true,
+      composed: true,
+    };
+    this.dispatchEvent(new CustomEvent("userAddOrEditItemGeneric", options));
+  }
+
+  _handleEditItem() {
+    // TODO: actually send the edited item info w/the event
+    const options = {
+      detail: {
+        buttonClicked: "edit",
+        existingItemData: "placeholder",
+      },
+      bubbles: true,
+      composed: true,
+    };
+    this.dispatchEvent(new CustomEvent("userAddOrEditItemGeneric", options));
+  }
 }
 
 customElements.define("dote-list-viewmode", DoteListViewmode);
