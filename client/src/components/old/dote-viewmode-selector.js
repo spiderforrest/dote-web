@@ -1,3 +1,5 @@
+// Old component for viewmode selector. No longer used.
+// Viewmode selector functionality has been merged into the component in `dote-viewmode.js`.
 import {LitElement, css, html} from 'lit';
 import {map} from 'lit/directives/map.js';
 import {classMap} from 'lit/directives/class-map.js';

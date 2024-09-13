@@ -1,8 +1,8 @@
 import { LitElement, css, html } from "lit";
 import { ContextConsumer } from "@lit/context";
 
-import { userContextKey } from "../context/dote-context-objects.js";
-import { Items } from "../../util/Items.js";
+import { userContextKey } from "../../context/dote-context-objects.js";
+import { Items } from "../../../util/Items.js";
 
 // Mixin for rendering cascading items in list-type viewmodes.
 // Use to create subclasses for rendering specific item types.

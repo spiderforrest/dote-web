@@ -3,9 +3,9 @@
 import { LitElement, css, html } from "lit";
 import { ContextConsumer } from "@lit/context";
 
-import { userContextKey } from "../context/dote-context-objects.js";
+import { userContextKey } from "../../context/dote-context-objects.js";
 import { DoteListViewmodeTodoItem, DoteListViewmodeNoteItem, DoteListViewmodeTagItem } from "./dote-list-viewmode-item-mixin.js";
-import { Items } from "../../util/Items.js";
+import { Items } from "../../../util/Items.js";
 
 export class DoteListViewmode extends LitElement {
   // context, getters, and properties =======================

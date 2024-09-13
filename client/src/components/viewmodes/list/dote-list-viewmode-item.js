@@ -1,8 +1,8 @@
 import { LitElement, css, html } from "lit";
 import { ContextConsumer } from "@lit/context";
 
-import { userContextKey } from "../context/dote-context-objects.js";
-import { Items } from "../../util/Items.js";
+import { userContextKey } from "../../context/dote-context-objects.js";
+import { Items } from "../../../util/Items.js";
 
 // Generic item element for rendering cascading list-style viewmodes.
 // Renders item that can show/hide item bodies and children.

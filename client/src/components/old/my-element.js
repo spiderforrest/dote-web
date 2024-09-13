@@ -1,3 +1,5 @@
+// Sample component that ships with Lit. Not sure why it's still here, to be honest.
+
 /**
  * @license
  * Copyright 2019 Google LLC
