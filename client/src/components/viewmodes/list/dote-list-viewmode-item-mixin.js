@@ -130,13 +130,13 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
         bodyContentEl = html`
           <details class="dote-listmode-todo-itemcard-bodytoggle">
             <summary>${this.itemData.body.substring(0, 50)+"..."}</summary>
-            <p class="dote-listmode-todo-itemcard-bodytextdisplay">
+            <p class="bodytextdisplay">
               ${this.itemData.body}
             </p>
           </details>`
         } else { // otherwise, have this element open the inline body editor
           bodyContentEl = html`
-            <details class="dote-listmod-todo-itemcard-bodytoggle">
+            <details class="dote-listmode-todo-itemcard-bodytoggle">
               <summary><i>click to add body data</i></summary>
               <p>the inline editor will go here</p>
             </details>`
@@ -147,7 +147,7 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
     if (this.itemData.children.length > 0) {
         childContentEl = html`
           <details class="dote-listmode-todo-itemcard-childrenlist">
-            <summary>${this.itemData.children.length+" children (hidden)"}</summary>
+            <summary>${this.itemData.children.length+" children"}</summary>
             ${this.itemData.children.map((childId) => {
               // create different element for each child depending on its type
               const childItem = this.userData.userItems.get_item(childId);
@@ -168,7 +168,7 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
                     itemdepth=${this.itemDepth + 1}
                   ></dote-list-viewmode-tag-item>`;
               }
-            })};
+            })}
           </details>
       `;
     } else {
@@ -177,10 +177,10 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
 
     return html`
       <section class="dote-listmode-todo-itemcard-topbar">
-        <input type="checkbox" class="dote-listmode-todo-itemcard-completioncheckbox" />
-        <h3 class="dote-listmode-todo-itemcard-titledisplay">${this.itemData.title}</h3>
-        <p class="dote-listmode-todo-itemcard-itemtypedisplay">${this.itemData.type} | </p>
-        <p class="dote-listmode-todo-itemcard-utimedisplay">utime goes here once it's implemented</p>
+        <input type="checkbox" class="completioncheckbox" />
+        <h3 class="titledisplay">${this.itemData.title}</h3>
+        <p class="itemtypedisplay">${this.itemData.type} | </p>
+        <p class="utimedisplay">utime goes here once it's implemented</p>
       </section>
       ${bodyContentEl}
       <section class="dote-listmode-todo-itemcard-bottombar">
@@ -196,56 +196,89 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
       </section>
       ${childContentEl}
     `;
-
-    // old pre-redesign todo item rendering
-    // return html`
-    //   ${this.itemData.children.length > 0
-    //     ? html`<a
-    //         @click="${this._toggleChildrenMinimized}"
-    //         class="dote-itemcard-childrentoggle"
-    //         >${this.childrenMinimized === true
-    //           ? html`<strong>𑾰</strong>`
-    //           : "━"}</a
-    //       >`
-    //     : html`<a class="dote-itemcard-childrentoggle">●</a>`}
-    //   <span class="dote-itemcard-title"
-    //     ><strong>${this.itemData.title}</strong> |
-    //   </span>
-    //   <span class="dote-itemcard-type">${this.itemData.type} | </span>
-    //   ${this.itemData.body
-    //     ? html`<span
-    //         class="dote-itemcard-bodytoggle"
-    //         @click="${this._toggleBodyMinimized}"
-    //         >${this.bodyMinimized ? "≢ " : "≡ "}|
-    //       </span>`
-    //     : undefined}
-    //   <span class="dote-itemcard-depth"
-    //     >depth: ${this.itemDepth} |
-    //   </span>
-    //   <span class="dote-itemcard-ctime"
-    //     ><em
-    //       >created:
-    //       ${new Date(this.itemData.created * 1000).toLocaleString()}</em
-    //     ></span
-    //   >
-    //   ${bodyContentEl}
-    //   ${this.childrenMinimized === false ? childContentEl : minimizedChildrenEl}
-    // `;
     }
 
     // styling ==================
     static styles = css`
       :host {
         display: block;
-        border: thin solid grey;
-        border-radius: 0.6em 0.6em 0.6em 0.6em;
-        margin-left: 0.75em;
+        margin-left: 0.4em;
         margin-bottom: 0.25em;
         margin-top: 0.25em;
-        padding-left: 0.5em;
         padding-top: 0.15em;
         padding-bottom: 0.15em;
       }
+
+      summary {
+        color: grey;
+        font-style: italic;
+      }
+
+      .dote-listmode-todo-itemcard-topbar {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.15em 0.25em 0.15em 0.25em;
+        border-bottom: thin solid grey;
+        border-top: thin solid grey;
+        border-right: thin solid grey;
+        border-left: thin solid grey;
+        border-radius: 0.6em 0.6em 0 0;
+      }
+
+      .dote-listmode-todo-itemcard-topbar > p {
+        margin: 0 0 0 0;
+      }
+      
+      .dote-listmode-todo-itemcard-topbar > .completioncheckbox {
+        flex: 0 0 auto;
+      }
+
+      .dote-listmode-todo-itemcard-topbar > .titledisplay {
+        flex: 4 0 65%;
+        margin: 0 0 0 0;
+      }
+
+      .dote-listmode-todo-itemcard-topbar > .itemtypedisplay {
+        flex: 0 0 auto;
+      }
+
+      .dote-listmode-todo-itemcard-topbar > .utimedisplay {
+        flex: 0 0 auto;
+      }
+
+      .dote-listmode-todo-itemcard-bodytoggle {
+        border-left: thin solid grey;
+        border-right: thin solid grey;
+        padding: 0.15em 0.25em 0.15em 0.25em;
+      }
+
+      .dote-listmode-todo-itemcard-bodytoggle > .bodytextdisplay {
+        padding: 0.15em 0.25em 0.15em 0.25em;
+      }
+
+      .dote-listmode-todo-itemcard-bottombar {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0.25em 0 0.25em;
+        border: thin solid grey;
+        border-radius: 0 0 0.6em 0.6em;
+      }
+
+      .dote-listmode-todo-itemcard-childrenlist {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.1em 0.1em 0.1em 0.1em;
+        border-bottom-left-radius: 0.6em;
+        border-left: thin dashed grey;
+        border-bottom: thin dashed grey;
+      }
+
     `;
   }
 
