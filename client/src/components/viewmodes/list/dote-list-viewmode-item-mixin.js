@@ -47,47 +47,47 @@ const DoteListViewmodeItemMixin = (LitElement) => class extends LitElement {
 
   // styling ===============
   // these items may be overridden by subclasses below.
-  static styles = css`
-    :host {
-      display: block;
-      border-left: thin solid grey;
-      border-bottom: thin solid grey;
-      border-top: thin dashed gray;
-      border-radius: 0 0 0 1em;
-      margin-left: 0.75em;
-      margin-bottom: 0.25em;
-      margin-top: 0.25em;
-      padding-left: 0.5em;
-      padding-top: 0.15em;
-      padding-bottom: 0.15em;
-    }
-
-    .dote-itemcard-childrentoggle {
-      margin-left: 0.25em;
-      margin-right: 0.25em;
-    }
-
-    .dote-itemcard-title {
-      margin-left: 0.25em;
-    }
-
-    .dote-itemcard-body-data {
-      border: thin solid gold;
-      margin-bottom: 0.25em;
-      margin-top: 0.25em;
-      padding-left: 0.5em;
-      background-color: lightgrey;
-    }
-
-    .dote-itemcard-ctime {
-      font-size: 0.8em;
-      font-style: italic;
-    }
-
-    .dote-itemcard-minimized-children {
-      margin: 0.25em 0em 0.25em 1em;
-    }
-  `;
+  // static styles = css`
+  //   :host {
+  //     display: block;
+  //     border-left: thin solid grey;
+  //     border-bottom: thin solid grey;
+  //     border-top: thin dashed gray;
+  //     border-radius: 0 0 0 1em;
+  //     margin-left: 0.75em;
+  //     margin-bottom: 0.25em;
+  //     margin-top: 0.25em;
+  //     padding-left: 0.5em;
+  //     padding-top: 0.15em;
+  //     padding-bottom: 0.15em;
+  //   }
+  //
+  //   .dote-itemcard-childrentoggle {
+  //     margin-left: 0.25em;
+  //     margin-right: 0.25em;
+  //   }
+  //
+  //   .dote-itemcard-title {
+  //     margin-left: 0.25em;
+  //   }
+  //
+  //   .dote-itemcard-body-data {
+  //     border: thin solid gold;
+  //     margin-bottom: 0.25em;
+  //     margin-top: 0.25em;
+  //     padding-left: 0.5em;
+  //     background-color: lightgrey;
+  //   }
+  //
+  //   .dote-itemcard-ctime {
+  //     font-size: 0.8em;
+  //     font-style: italic;
+  //   }
+  //
+  //   .dote-itemcard-minimized-children {
+  //     margin: 0.25em 0em 0.25em 1em;
+  //   }
+  // `;
 
   // event handlers ==================================================
   _toggleChildrenMinimized() {
@@ -112,9 +112,7 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
   render() {
     // the HTML content displayed in the item UI section where an item's children go when it's open
     let childContentEl = undefined;
-    // the HTML content displayed in the item UI section where an item's children go when it's minimized
-    let minimizedChildrenEl = undefined;
-    // the HTML content displayed directly beneath the item title, displays item body data
+    // the HTML content displayed directly beneath the item title, displays item body data if present
     let bodyContentEl = undefined;
 
     // if error loading item data
@@ -127,22 +125,31 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
     } else {
       // once loaded
       // if this item has body data and it's toggled to display, create element for it
-      if (this.itemData.body && this.bodyMinimized === false) {
-        bodyContentEl = html`<p class="dote-itemcard-body-data">
-          ${this.itemData.body}
-        </p>`;
-      }
+      if (typeof this.itemData.body === "string") {
+        // create an element with the data if it's present
+        bodyContentEl = html`
+          <details class="dote-listmode-todo-itemcard-bodytoggle">
+            <summary>${this.itemData.body.substring(0, 50)+"..."}</summary>
+            <p class="dote-listmode-todo-itemcard-bodytextdisplay">
+              ${this.itemData.body}
+            </p>
+          </details>`
+        } else { // otherwise, have this element open the inline body editor
+          bodyContentEl = html`
+            <details class="dote-listmod-todo-itemcard-bodytoggle">
+              <summary><i>click to add body data</i></summary>
+              <p>the inline editor will go here</p>
+            </details>`
+        }
+    }
 
-      // if item has children, render them minimized/unminimized depending on state
-      if (this.itemData.children.length > 0) {
-        this.childrenMinimized
-          ? (minimizedChildrenEl = html`<p
-              class="dote-itemcard-minimized-children"
-            >
-              <i>(${this.itemData.children.length} children)</i>
-            </p>`)
-          : (childContentEl = this.itemData.children.map((childId) => {
-              // create element for each child item if unminimized, varying based on its type
+    // if item has children, render the element for them
+    if (this.itemData.children.length > 0) {
+        childContentEl = html`
+          <details class="dote-listmode-todo-itemcard-childrenlist">
+            <summary>${this.itemData.children.length+" children (hidden)"}</summary>
+            ${this.itemData.children.map((childId) => {
+              // create different element for each child depending on its type
               const childItem = this.userData.userItems.get_item(childId);
               switch (childItem.type) {
                 case 'todo':
@@ -150,99 +157,94 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
                     itemid=${childItem.id}
                     itemdepth=${this.itemDepth + 1}
                   ></dote-list-viewmode-todo-item>`;
-                  break;
                 case 'note':
                   return html`<dote-list-viewmode-note-item
                     itemid=${childItem.id}
                     itemdepth=${this.itemDepth + 1}
                   ></dote-list-viewmode-note-item>`;
-                  break;
                 case 'tag':
                   return html`<dote-list-viewmode-tag-item
                     itemid=${childItem.id}
                     itemdepth=${this.itemDepth + 1}
                   ></dote-list-viewmode-tag-item>`;
-                  break;
               }
-            }));
-      }
+            })};
+          </details>
+      `;
+    } else {
+      childContentEl = undefined;
     }
 
     return html`
-      ${this.itemData.children.length > 0
-        ? html`<a
-            @click="${this._toggleChildrenMinimized}"
-            class="dote-itemcard-childrentoggle"
-            >${this.childrenMinimized === true
-              ? html`<strong>𑾰</strong>`
-              : "━"}</a
-          >`
-        : html`<a class="dote-itemcard-childrentoggle">●</a>`}
-      <span class="dote-itemcard-title"
-        ><strong>${this.itemData.title}</strong> |
-      </span>
-      <span class="dote-itemcard-type">${this.itemData.type} | </span>
-      ${this.itemData.body
-        ? html`<span
-            class="dote-itemcard-bodytoggle"
-            @click="${this._toggleBodyMinimized}"
-            >${this.bodyMinimized ? "≢ " : "≡ "}|
-          </span>`
-        : undefined}
-      <span class="dote-itemcard-depth"
-        >depth: ${this.itemDepth} |
-      </span>
-      <span class="dote-itemcard-ctime"
-        ><em
-          >created:
-          ${new Date(this.itemData.created * 1000).toLocaleString()}</em
-        ></span
-      >
+      <section class="dote-listmode-todo-itemcard-topbar">
+        <input type="checkbox" class="dote-listmode-todo-itemcard-completioncheckbox" />
+        <h3 class="dote-listmode-todo-itemcard-titledisplay">${this.itemData.title}</h3>
+        <p class="dote-listmode-todo-itemcard-itemtypedisplay">${this.itemData.type} | </p>
+        <p class="dote-listmode-todo-itemcard-utimedisplay">utime goes here once it's implemented</p>
+      </section>
       ${bodyContentEl}
-      ${this.childrenMinimized === false ? childContentEl : minimizedChildrenEl}
+      <section class="dote-listmode-todo-itemcard-bottombar">
+        ${this.itemData.due !== undefined
+          ? // if this item has a specified due date, display it
+          html`
+            <p class="dote-listmode-todo-itemcard-duedate-display">${new Date(this.itemData.due*1000).toLocaleString()}</p>
+            `
+          : // otherwise, display nothing
+          undefined}
+        <button class="dote-listmode-todo-itemcard-addchildbutton" type="button">add child button placeholder</button>
+        <span>more action-for-this-item buttons will go here</span>
+      </section>
+      ${childContentEl}
     `;
+
+    // old pre-redesign todo item rendering
+    // return html`
+    //   ${this.itemData.children.length > 0
+    //     ? html`<a
+    //         @click="${this._toggleChildrenMinimized}"
+    //         class="dote-itemcard-childrentoggle"
+    //         >${this.childrenMinimized === true
+    //           ? html`<strong>𑾰</strong>`
+    //           : "━"}</a
+    //       >`
+    //     : html`<a class="dote-itemcard-childrentoggle">●</a>`}
+    //   <span class="dote-itemcard-title"
+    //     ><strong>${this.itemData.title}</strong> |
+    //   </span>
+    //   <span class="dote-itemcard-type">${this.itemData.type} | </span>
+    //   ${this.itemData.body
+    //     ? html`<span
+    //         class="dote-itemcard-bodytoggle"
+    //         @click="${this._toggleBodyMinimized}"
+    //         >${this.bodyMinimized ? "≢ " : "≡ "}|
+    //       </span>`
+    //     : undefined}
+    //   <span class="dote-itemcard-depth"
+    //     >depth: ${this.itemDepth} |
+    //   </span>
+    //   <span class="dote-itemcard-ctime"
+    //     ><em
+    //       >created:
+    //       ${new Date(this.itemData.created * 1000).toLocaleString()}</em
+    //     ></span
+    //   >
+    //   ${bodyContentEl}
+    //   ${this.childrenMinimized === false ? childContentEl : minimizedChildrenEl}
+    // `;
     }
 
     // styling ==================
     static styles = css`
       :host {
         display: block;
-        border-left: thin solid grey;
-        border-bottom: thin solid grey;
-        border-top: thin solid gray;
-        border-radius: 0 0 0 1em;
+        border: thin solid grey;
+        border-radius: 0.6em 0.6em 0.6em 0.6em;
         margin-left: 0.75em;
         margin-bottom: 0.25em;
         margin-top: 0.25em;
         padding-left: 0.5em;
         padding-top: 0.15em;
         padding-bottom: 0.15em;
-      }
-
-      .dote-itemcard-childrentoggle {
-        margin-left: 0.25em;
-        margin-right: 0.25em;
-      }
-
-      .dote-itemcard-title {
-        margin-left: 0.25em;
-      }
-
-      .dote-itemcard-body-data {
-        border: thin solid gold;
-        margin-bottom: 0.25em;
-        margin-top: 0.25em;
-        padding-left: 0.5em;
-        background-color: lightgrey;
-      }
-
-      .dote-itemcard-ctime {
-        font-size: 0.8em;
-        font-style: italic;
-      }
-
-      .dote-itemcard-minimized-children {
-        margin: 0.25em 0em 0.25em 1em;
       }
     `;
   }

@@ -109,6 +109,11 @@ export class DoteViewmode extends LitElement {
       margin-left: 1em;
       margin-right: 1em;
     }
+
+    .dote-viewmode-container {
+      margin-left: 0.5em;
+      margin-right: 0.5em;
+    }
   `;
 
   // event handlers ==================================================
