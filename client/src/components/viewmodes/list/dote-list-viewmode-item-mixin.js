@@ -31,8 +31,6 @@ const DoteListViewmodeItemMixin = (LitElement) => class extends LitElement {
   // constructor and lifecycle methods =======================
   constructor() {
     super();
-    this.bodyMinimized = true;
-    this.childrenMinimized = true;
     this._thisItemLoading = true;
     this._thisItemLoadingError = false;
   }
@@ -90,13 +88,7 @@ const DoteListViewmodeItemMixin = (LitElement) => class extends LitElement {
   // `;
 
   // event handlers ==================================================
-  _toggleChildrenMinimized() {
-    this.childrenMinimized = !this.childrenMinimized;
-  }
 
-  _toggleBodyMinimized() {
-    this.bodyMinimized = !this.bodyMinimized;
-  }
 }
 
 // Component for rendering todo items in a cascading list-style viewmode.
@@ -187,12 +179,24 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
         ${this.itemData.due !== undefined
           ? // if this item has a specified due date, display it
           html`
-            <p class="dote-listmode-todo-itemcard-duedate-display">${new Date(this.itemData.due*1000).toLocaleString()}</p>
+            <p class="duedate-display">${new Date(this.itemData.due*1000).toLocaleString()}</p>
             `
-          : // otherwise, display nothing
-          undefined}
-        <button class="dote-listmode-todo-itemcard-addchildbutton" type="button">add child button placeholder</button>
-        <span>more action-for-this-item buttons will go here</span>
+          : // otherwise, note lack of due date
+          html`
+            `
+        }
+        <button class="dote-listmode-todo-itemcard-addchildbutton" type="button">
+          <img src="https://placecats.com/64/64" alt="Add child item" height=64 width=64 class="addchildicon" />
+        </button>
+        <button class="dote-listmode-todo-itemcard-edititembutton" type="button">
+          <img src="https://placecats.com/64/64" alt="Edit this item" height=64 width=64 class="edititemicon" />
+        </button>
+        <button class="dote-listmode-todo-itemcard-archiveitembutton" type="button">
+          <img src="https://placecats.com/64/64" alt="Archive item" height=64 width=64 class="archiveitemicon" />
+        </button>
+        <button class="dote-listmode-todo-itemcard-moreactionsbutton" type="button">
+          <img src="https://placecats.com/64/64" alt="More actions" height=64 width=64 class="moreactionsbutton" />
+        </button>
       </section>
       ${childContentEl}
     `;
@@ -220,11 +224,14 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
         justify-content: space-between;
         align-items: center;
         padding: 0.15em 0.25em 0.15em 0.25em;
-        border-bottom: thin solid grey;
         border-top: thin solid grey;
         border-right: thin solid grey;
         border-left: thin solid grey;
         border-radius: 0.6em 0.6em 0 0;
+      }
+
+      .dote-listmode-todo-itemcard-topbar > .completioncheckbox {
+        margin-right: 1em;
       }
 
       .dote-listmode-todo-itemcard-topbar > p {
@@ -266,6 +273,22 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
         padding: 0 0.25em 0 0.25em;
         border: thin solid grey;
         border-radius: 0 0 0.6em 0.6em;
+      }
+
+      .dote-listmode-todo-itemcard-bottombar > .duedate-display {
+        flex: 0 0 85%;
+        margin: 0;
+      }
+
+      .dote-listmode-todo-itemcard-bottombar > button {
+        height: 1.5em;
+        width: 1.5em;
+        flex: 0 1 auto;
+      }
+
+      .dote-listmode-todo-itemcard-bottombar > button > img {
+        height: 1.5em;
+        width: 1.5em;
       }
 
       .dote-listmode-todo-itemcard-childrenlist {
