@@ -88,7 +88,9 @@ const DoteListViewmodeItemMixin = (LitElement) => class extends LitElement {
   // `;
 
   // event handlers ==================================================
-
+  _toggleChildrenMinimized() {
+    this.childrenMinimized = !this.childrenMinimized
+  }
 }
 
 // Component for rendering todo items in a cascading list-style viewmode.
@@ -458,6 +460,7 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
   }
 
   connectedCallback() {
+    this.childrenMinimized = true;
     super.connectedCallback();
   }
 
@@ -501,11 +504,15 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
     if (this.itemData.children.length > 0) {
       if (this.childrenMinimized === true) {
         // if children are currently minimized
-        childContentEl = undefined;
+        childContentEl = html`
+          <section class="children-list">
+            <p class="children-list-minimized">${this.itemData.children.length+" children"}</p>
+          </section>
+        `;
       } else {
           // otherwise, if the children should be displayed
           childContentEl = html`
-          <section class="dote-listmode-tag-itemcard-childrenlist">
+          <section class="children-list">
             ${this.itemData.children.map((childId) => {
               // create different element for each child depending on its type
               const childItem = this.userData.userItems.get_item(childId);
@@ -534,15 +541,17 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       childContentEl = undefined;
 
     return html`
-        <section class="dote-listmode-tag-itemcard-header">
-          <button class="dote-listmode-tag-itemcard-toggleshowchildren" type="button">togglechildren</button>
-          <h3 class="dote-listmode-tag-itemcard-title">${this.itemData.title}</h3>
-          <button class="dote-listmode-tag-itemcard-moreactions">more actions button</button>
-        </section>
-        ${bodyContentEl}
-        ${childContentEl}
-        <section class="dote-listmode-tag-itemcard-footer">
-          <button class="dote-listmode-tag-itemcard-footer-addchild" type="button">add child</button>
+        <button class="toggle-show-children-button" type="button" @click="${this._toggleChildrenMinimized}">togglechildren</button>
+        <section class="dote-listmode-tag-itemcard-rightside">
+          <section class="dote-listmode-tag-itemcard-topbar">
+            <h3 class="titledisplay">${this.itemData.title+" (tag)"}</h3>
+            <button class="dote-listmode-tag-itemcard-moreactions">more actions button</button>
+          </section>
+          ${bodyContentEl}
+          ${childContentEl}
+          <section class="dote-listmode-tag-itemcard-bottombar">
+            <button class="add-child-button" type="button">add child</button>
+          </section>
         </section>
     `;
   }
@@ -550,26 +559,59 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
     // styling ===============
     static styles = css`
       :host {
-        display: block;
-        border-left: thick dashed grey;
-        border-bottom: thick dashed grey;
-        border-top: thick dashed grey;
-        margin-left: 0.75em;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: stretch;
+        gap: 0.5em;
+        margin-left: 0.4em;
         margin-bottom: 0.25em;
         margin-top: 0.25em;
-        padding-left: 0.5em;
         padding-top: 0.15em;
         padding-bottom: 0.15em;
       }
 
       .dote-itemcard-childrentoggle {
-        margin-left: 0.25em;
-        margin-right: 0.25em;
+        margin-left: 0.25%;
+        margin-right: 0.25%;
+        flex: 0 0 5%;
       }
 
-      .dote-itemcard-title {
-        margin-left: 0.25em;
+      .dote-listmode-tag-itemcard-rightside {
+        flex: 0 0 90%;
       }
+
+      .dote-listmode-tag-itemcard-topbar {
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 1%;
+        align-items: center;
+        justify-content: space-between;
+        border-top: thin solid grey;
+        border-bottom: thin solid grey;
+      }
+
+      .dote-listmode-tag-itemcard-bottombar {
+        display: flex;
+        flex-flow: row nowrap;
+        border: thin solid grey;
+        justify-content: center;
+      }
+
+      .dote-listmode-tag-itemcard-topbar > .titledisplay {
+        flex: 4 0 65%;
+        margin: 0 0 0 0;
+      }
+
+      .dote-listmode-tag-itemcard-bodytoggle {
+        margin-left: 1em;
+        border-bottom: thin solid grey;
+      }
+
+      summary {
+        color: grey;
+        font-style: italic;
+      }
+
 
       .dote-itemcard-body-data {
         border: thin solid gold;
@@ -578,10 +620,17 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
         padding-left: 0.5em;
         background-color: lightgrey;
       }
+      
+      .children-list {
+        border-left: thin dashed grey;
+        padding-right: 1em;
+        padding-left: 1em;
+      }
 
-      .dote-itemcard-ctime {
-        font-size: 0.8em;
+      .children-list-minimized {
+        margin: 0 0 0 0;
         font-style: italic;
+        color: grey;
       }
     `;
 }
