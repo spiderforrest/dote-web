@@ -447,7 +447,7 @@ export class DoteListViewmodeNoteItem extends DoteListViewmodeItemMixin(LitEleme
         font-style: italic;
       }
     `;
-  }
+}
 
 customElements.define("dote-list-viewmode-note-item", DoteListViewmodeNoteItem);
 
@@ -462,39 +462,52 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
   }
 
   render() {
-    // the HTML content displayed in the item UI section where an item's children go when it's open
+    // the HTML content displayed in the item UI section where the tag's children go 
     let childContentEl = undefined;
-    // the HTML content displayed in the item UI section where an item's children go when it's minimized
-    let minimizedChildrenEl = undefined;
-    // the HTML content displayed directly beneath the item title, displays item body data
+    // the HTML content displayed directly beneath the tag title, displays item body data if present
     let bodyContentEl = undefined;
+    // the footer displayed under the list of the tag's children, containing an "add child item" button
+    let footerContentEl = undefined;
 
     // if error loading item data
     if (this._thisItemLoadingError)
       return html`<p><strong>error loading item!</strong></p>`;
 
     // if not finished loading, display loading message
-    if (this._thisItemLoading) {
+    if (this._thisItemLoading)
       return html`<p><i>loading item...</i></p>`;
-    } else {
-      // once loaded
-      // if this item has body data and it's toggled to display, create element for it
-      if (this.itemData.body && this.bodyMinimized === false) {
-        bodyContentEl = html`<p class="dote-itemcard-body-data">
-          ${this.itemData.body}
-        </p>`;
-      }
 
-      // if item has children, render them minimized/unminimized depending on state
-      if (this.itemData.children.length > 0) {
-        this.childrenMinimized
-          ? (minimizedChildrenEl = html`<p
-              class="dote-itemcard-minimized-children"
-            >
-              <i>(${this.itemData.children.length} children)</i>
-            </p>`)
-          : (childContentEl = this.itemData.children.map((childId) => {
-              // create element for each child item if unminimized, varying based on its type
+    // once loaded
+    // if this item has body data, create an element for it
+    if (typeof this.itemData.body === "string") {
+      // create the body element and populate it with the tag's body data
+      bodyContentEl = html`
+        <details class="dote-listmode-tag-itemcard-bodytoggle">
+          <summary>${this.itemData.body.substring(0, 50)+"..."}</summary>
+          <p class="dote-itemcard-body-data">
+            ${this.itemData.body}
+          </p>
+        </details>`
+    } else {
+      // otherwise, the element should open the inline body editor
+        bodyContentEl = html`
+          <details class="dote-listmode-tag-itemcard-bodytoggle">
+            <summary><i>click to add body data</i></summary>
+            <p>the inline editor will go here</p>
+          </details>`
+    }
+
+    // if item has children, render the element for them
+    if (this.itemData.children.length > 0) {
+      if (this.childrenMinimized === true) {
+        // if children are currently minimized
+        childContentEl = undefined;
+      } else {
+          // otherwise, if the children should be displayed
+          childContentEl = html`
+          <section class="dote-listmode-tag-itemcard-childrenlist">
+            ${this.itemData.children.map((childId) => {
+              // create different element for each child depending on its type
               const childItem = this.userData.userItems.get_item(childId);
               switch (childItem.type) {
                 case 'todo':
@@ -502,58 +515,37 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
                     itemid=${childItem.id}
                     itemdepth=${this.itemDepth + 1}
                   ></dote-list-viewmode-todo-item>`;
-                  break;
                 case 'note':
                   return html`<dote-list-viewmode-note-item
                     itemid=${childItem.id}
                     itemdepth=${this.itemDepth + 1}
                   ></dote-list-viewmode-note-item>`;
-                  break;
                 case 'tag':
                   return html`<dote-list-viewmode-tag-item
                     itemid=${childItem.id}
                     itemdepth=${this.itemDepth + 1}
                   ></dote-list-viewmode-tag-item>`;
-                  break;
               }
-            }));
+            })}
+          </section>
+          `;
       }
-    }
+    } else
+      childContentEl = undefined;
 
     return html`
-      ${this.itemData.children.length > 0
-        ? html`<a
-            @click="${this._toggleChildrenMinimized}"
-            class="dote-itemcard-childrentoggle"
-            >${this.childrenMinimized === true
-              ? html`<strong>𑾰</strong>`
-              : "━"}</a
-          >`
-        : html`<a class="dote-itemcard-childrentoggle">●</a>`}
-      <span class="dote-itemcard-title"
-        ><strong>${this.itemData.title}</strong> |
-      </span>
-      <span class="dote-itemcard-type">${this.itemData.type}  | </span>
-      ${this.itemData.body
-        ? html`<span
-            class="dote-itemcard-bodytoggle"
-            @click="${this._toggleBodyMinimized}"
-            >${this.bodyMinimized ? "≢ " : "≡ "}|
-          </span>`
-        : undefined}
-      <span class="dote-itemcard-depth"
-        >depth: ${this.itemDepth} |
-      </span>
-      <span class="dote-itemcard-ctime"
-        ><em
-          >created:
-          ${new Date(this.itemData.created * 1000).toLocaleString()}</em
-        ></span
-      >
-      ${bodyContentEl}
-      ${this.childrenMinimized === false ? childContentEl : minimizedChildrenEl}
+        <section class="dote-listmode-tag-itemcard-header">
+          <button class="dote-listmode-tag-itemcard-toggleshowchildren" type="button">togglechildren</button>
+          <h3 class="dote-listmode-tag-itemcard-title">${this.itemData.title}</h3>
+          <button class="dote-listmode-tag-itemcard-moreactions">more actions button</button>
+        </section>
+        ${bodyContentEl}
+        ${childContentEl}
+        <section class="dote-listmode-tag-itemcard-footer">
+          <button class="dote-listmode-tag-itemcard-footer-addchild" type="button">add child</button>
+        </section>
     `;
-    }
+  }
 
     // styling ===============
     static styles = css`
@@ -592,6 +584,6 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
         font-style: italic;
       }
     `;
-  }
+}
 
 customElements.define("dote-list-viewmode-tag-item", DoteListViewmodeTagItem);
