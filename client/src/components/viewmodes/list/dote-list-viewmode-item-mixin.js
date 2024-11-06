@@ -541,11 +541,11 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       childContentEl = undefined;
 
     return html`
-        <button class="toggle-show-children-button" type="button" @click="${this._toggleChildrenMinimized}">togglechildren</button>
+        <button class="toggle-show-children-button" type="button" @click="${this._toggleChildrenMinimized}">${this.childrenMinimized ? "►" : "▼"}</button>
         <section class="dote-listmode-tag-itemcard-rightside">
           <section class="dote-listmode-tag-itemcard-topbar">
             <h3 class="titledisplay">${this.itemData.title+" (tag)"}</h3>
-            <button class="dote-listmode-tag-itemcard-moreactions">more actions button</button>
+            <button class="dote-listmode-tag-itemcard-moreactions">more actions</button>
           </section>
           ${bodyContentEl}
           ${childContentEl}
@@ -562,12 +562,12 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
         display: flex;
         flex-flow: row nowrap;
         align-items: stretch;
-        gap: 0.5em;
-        margin-left: 0.4em;
-        margin-bottom: 0.25em;
-        margin-top: 0.25em;
-        padding-top: 0.15em;
-        padding-bottom: 0.15em;
+        gap: 1%;
+        margin-left: 2%;
+        margin-bottom: 0.25%;
+        margin-top: 0.25%;
+        padding-top: 0.15%;
+        padding-bottom: 0.15%;
       }
 
       .dote-itemcard-childrentoggle {
@@ -577,7 +577,7 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       }
 
       .dote-listmode-tag-itemcard-rightside {
-        flex: 0 0 90%;
+        flex: 2 0 90%;
       }
 
       .dote-listmode-tag-itemcard-topbar {
@@ -603,7 +603,6 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       }
 
       .dote-listmode-tag-itemcard-bodytoggle {
-        margin-left: 1em;
         border-bottom: thin solid grey;
       }
 
@@ -623,8 +622,8 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       
       .children-list {
         border-left: thin dashed grey;
-        padding-right: 1em;
-        padding-left: 1em;
+        padding-right: 1%;
+        padding-left: 1%;
       }
 
       .children-list-minimized {
