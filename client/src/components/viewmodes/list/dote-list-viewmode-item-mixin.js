@@ -185,6 +185,7 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
             `
           : // otherwise, note lack of due date
           html`
+            <p class="duedate-display"><i>no target date set</i></p>
             `
         }
         <button class="dote-listmode-todo-itemcard-addchildbutton" type="button">
@@ -270,22 +271,26 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
       .dote-listmode-todo-itemcard-bottombar {
         display: flex;
         flex-flow: row nowrap;
-        justify-content: space-between;
+        justify-content: flex-end;
         align-items: center;
-        padding: 0 0.25em 0 0.25em;
+        padding: 0 0.5em 0 0.5em;
         border: thin solid grey;
         border-radius: 0 0 0.6em 0.6em;
       }
 
       .dote-listmode-todo-itemcard-bottombar > .duedate-display {
-        flex: 0 0 85%;
+        flex: 1.5 0 80%;
         margin: 0;
       }
 
       .dote-listmode-todo-itemcard-bottombar > button {
         height: 1.5em;
         width: 1.5em;
-        flex: 0 1 auto;
+        flex: 0 1 4%;
+        border-left: thin solid grey;
+        border-right: thin solid grey;
+        margin-left: 0.2em;
+        margin-right: 0.2em;
       }
 
       .dote-listmode-todo-itemcard-bottombar > button > img {
