@@ -180,13 +180,9 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
       <section class="dote-listmode-todo-itemcard-bottombar">
         ${this.itemData.due !== undefined
           ? // if this item has a specified due date, display it
-          html`
-            <p class="duedate-display">${new Date(this.itemData.due*1000).toLocaleString()}</p>
-            `
+          html`<p class="duedate-display">${new Date(this.itemData.due*1000).toLocaleString()}</p>`
           : // otherwise, note lack of due date
-          html`
-            <p class="duedate-display"><i>no target date set</i></p>
-            `
+          html`<p class="duedate-display"><i>no target date set</i></p>`
         }
         <button class="dote-listmode-todo-itemcard-addchildbutton" type="button">
           <img src="https://placecats.com/64/64" alt="Add child item" height=64 width=64 class="addchildicon" />
@@ -325,9 +321,9 @@ export class DoteListViewmodeNoteItem extends DoteListViewmodeItemMixin(LitEleme
   }
 
   render() {
-    // the HTML content displayed in the item UI section where an item's children go when it's open
+    // the content displayed in the item UI section where an item's children go when it's open
     let childContentEl = undefined;
-    // the HTML content displayed in the item UI section where an item's children go when it's minimized
+    // the content displayed in the item UI section where an item's children go when it's minimized
     let minimizedChildrenEl = undefined;
     // the HTML content displayed directly beneath the item title, displays item body data
     let bodyContentEl = undefined;
@@ -342,79 +338,84 @@ export class DoteListViewmodeNoteItem extends DoteListViewmodeItemMixin(LitEleme
     } else {
       // once loaded
       // if this item has body data and it's toggled to display, create element for it
-      if (this.itemData.body && this.bodyMinimized === false) {
-        bodyContentEl = html`<p class="dote-itemcard-body-data">
-          ${this.itemData.body}
-        </p>`;
+      if (typeof this.itemData.body === "string") {
+        // create an element with the data if it's present
+        bodyContentEl = html`
+          <details class="dote-listmode-note-itemcard-bodytoggle">
+            <summary>${this.itemData.body.substring(0, 50)+"..."}</summary>
+            <p class="bodytextdisplay">
+              ${this.itemData.body}
+            </p>
+          </details>`
+      } else { // otherwise, have this element open the inline body editor
+          bodyContentEl = html`
+            <details class="dote-listmode-note-itemcard-bodytoggle">
+              <summary><i>click to add body data</i></summary>
+              <p>the inline editor will go here</p>
+            </details>`
+        }
       }
 
-      // if item has children, render them minimized/unminimized depending on state
-      if (this.itemData.children.length > 0) {
-        this.childrenMinimized
-          ? (minimizedChildrenEl = html`<p
-              class="dote-itemcard-minimized-children"
-            >
-              <i>(${this.itemData.children.length} children)</i>
-            </p>`)
-          : (childContentEl = this.itemData.children.map((childId) => {
-              // create element for each child item if unminimized, varying based on its type
-              const childItem = this.userData.userItems.get_item(childId);
-              switch (childItem.type) {
-                case 'todo':
-                  return html`<dote-list-viewmode-todo-item
-                    itemid=${childItem.id}
-                    itemdepth=${this.itemDepth + 1}
-                  ></dote-list-viewmode-todo-item>`;
-                  break;
-                case 'note':
-                  return html`<dote-list-viewmode-note-item
-                    itemid=${childItem.id}
-                    itemdepth=${this.itemDepth + 1}
-                  ></dote-list-viewmode-note-item>`;
-                  break;
-                case 'tag':
-                  return html`<dote-list-viewmode-tag-item
-                    itemid=${childItem.id}
-                    itemdepth=${this.itemDepth + 1}
-                  ></dote-list-viewmode-tag-item>`;
-                  break;
-              }
-            }));
-      }
+    // if item has children, render the element for them
+    if (this.itemData.children.length > 0) {
+      childContentEl = html`
+        <details class="dote-listmode-note-itemcard-childrenlist">
+          <summary>${this.itemData.children.length+" children"}</summary>
+          ${this.itemData.children.map((childId) => {
+            // create different element for each child depending on its type
+            const childItem = this.userData.userItems.get_item(childId);
+            switch (childItem.type) {
+              case 'todo':
+                return html`<dote-list-viewmode-todo-item
+                  itemid=${childItem.id}
+                  itemdepth=${this.itemDepth + 1}
+                ></dote-list-viewmode-todo-item>`;
+              case 'note':
+                return html`<dote-list-viewmode-note-item
+                  itemid=${childItem.id}
+                  itemdepth=${this.itemDepth + 1}
+                ></dote-list-viewmode-note-item>`;
+              case 'tag':
+                return html`<dote-list-viewmode-tag-item
+                  itemid=${childItem.id}
+                  itemdepth=${this.itemDepth + 1}
+                ></dote-list-viewmode-tag-item>`;
+            }
+          })}
+        </details>
+      `;
+    } else {
+      childContentEl = undefined;
     }
 
     return html`
-      ${this.itemData.children.length > 0
-        ? html`<a
-            @click="${this._toggleChildrenMinimized}"
-            class="dote-itemcard-childrentoggle"
-            >${this.childrenMinimized === true
-              ? html`<strong>𑾰</strong>`
-              : "━"}</a
-          >`
-        : html`<a class="dote-itemcard-childrentoggle">●</a>`}
-      <span class="dote-itemcard-title"
-        ><strong>${this.itemData.title}</strong> |
-      </span>
-      <span class="dote-itemcard-type">${this.itemData.type} | </span>
-      ${this.itemData.body
-        ? html`<span
-            class="dote-itemcard-bodytoggle"
-            @click="${this._toggleBodyMinimized}"
-            >${this.bodyMinimized ? "≢ " : "≡ "}|
-          </span>`
-        : undefined}
-      <span class="dote-itemcard-depth"
-        >depth: ${this.itemDepth} |
-      </span>
-      <span class="dote-itemcard-ctime"
-        ><em
-          >created:
-          ${new Date(this.itemData.created * 1000).toLocaleString()}</em
-        ></span
-      >
+      <section class="dote-listmode-note-itemcard-topbar">
+        <h3 class="titledisplay">${this.itemData.title}</h3>
+        <p class="itemtypedisplay">${this.itemData.type} | </p>
+        <p class="utimedisplay">utime goes here once it's implemented</p>
+      </section>
       ${bodyContentEl}
-      ${this.childrenMinimized === false ? childContentEl : minimizedChildrenEl}
+      <section class="dote-listmode-note-itemcard-bottombar">
+        ${this.itemData.due !== undefined
+          ? // if this item has a specified due date, display it
+          html`<p class="duedate-display">${new Date(this.itemData.due*1000).toLocaleString()}</p>`
+          : // otherwise, note lack of due date
+          html`<p class="duedate-display"><i>no target date set</i></p>`
+        }
+        <button class="dote-listmode-note-itemcard-addchildbutton" type="button">
+          <img src="https://placecats.com/64/64" alt="Add child item" height=64 width=64 class="addchildicon" />
+        </button>
+        <button class="dote-listmode-note-itemcard-edititembutton" type="button">
+          <img src="https://placecats.com/64/64" alt="Edit this item" height=64 width=64 class="edititemicon" />
+        </button>
+        <button class="dote-listmode-note-itemcard-archiveitembutton" type="button">
+          <img src="https://placecats.com/64/64" alt="Archive item" height=64 width=64 class="archiveitemicon" />
+        </button>
+        <button class="dote-listmode-note-itemcard-moreactionsbutton" type="button">
+          <img src="https://placecats.com/64/64" alt="More actions" height=64 width=64 class="moreactionsbutton" />
+        </button>
+      </section>
+      ${childContentEl}
     `;
     }
 
@@ -422,36 +423,94 @@ export class DoteListViewmodeNoteItem extends DoteListViewmodeItemMixin(LitEleme
     static styles = css`
       :host {
         display: block;
-        border-left: medium double grey;
-        border-bottom: medium double grey;
-        border-top: medium solid gray;
-        margin-left: 0.75em;
+        margin-left: 0.4em;
         margin-bottom: 0.25em;
         margin-top: 0.25em;
-        padding-left: 0.5em;
         padding-top: 0.15em;
         padding-bottom: 0.15em;
+        box-shadow: 0.25em 0.25em darkgrey;
       }
 
-      .dote-itemcard-childrentoggle {
-        margin-left: 0.25em;
-        margin-right: 0.25em;
-      }
-
-      .dote-itemcard-title {
-        margin-left: 0.25em;
-      }
-
-      .dote-itemcard-body-data {
-        border: thin solid gold;
-        margin-bottom: 0.25em;
-        margin-top: 0.25em;
-        padding-left: 0.5em;
-        background-color: lightgrey;
-
-      .dote-itemcard-ctime {
-        font-size: 0.8em;
+      summary {
+        color: grey;
         font-style: italic;
+      }
+
+      .dote-listmode-note-itemcard-topbar {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.15em 0.25em 0.15em 0.25em;
+        border-top: thin solid grey;
+        border-right: thin solid grey;
+        border-left: thin solid grey;
+      }
+
+      .dote-listmode-note-itemcard-topbar > p {
+        margin: 0 0 0 0;
+      }
+
+      .dote-listmode-note-itemcard-topbar > .titledisplay {
+        flex: 4 0 65%;
+        margin: 0 0 0 0;
+      }
+
+      .dote-listmode-note-itemcard-topbar > .itemtypedisplay {
+        flex: 0 0 auto;
+      }
+
+      .dote-listmode-note-itemcard-topbar > .utimedisplay {
+        flex: 0 0 auto;
+      }
+
+      .dote-listmode-note-itemcard-bodytoggle {
+        border-left: thin solid grey;
+        border-right: thin solid grey;
+        padding: 0.05em 0.25em 0.05em 0.25em;
+      }
+
+      .dote-listmode-note-itemcard-bodytoggle > .bodytextdisplay {
+        padding: 0.15em 0.25em 0.15em 0.25em;
+      }
+
+      .dote-listmode-note-itemcard-bottombar {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0 0.5em 0 0.5em;
+        border: thin solid grey;
+      }
+
+      .dote-listmode-note-itemcard-bottombar > .duedate-display {
+        flex: 1.5 0 80%;
+        margin: 0;
+      }
+
+      .dote-listmode-note-itemcard-bottombar > button {
+        height: 1.5em;
+        width: 1.5em;
+        flex: 0 1 4%;
+        border-left: thin solid grey;
+        border-right: thin solid grey;
+        margin-left: 0.2em;
+        margin-right: 0.2em;
+      }
+
+      .dote-listmode-note-itemcard-bottombar > button > img {
+        height: 1.5em;
+        width: 1.5em;
+      }
+
+      .dote-listmode-note-itemcard-childrenlist {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.1em 0.1em 0.1em 0.1em;
+        border-left: thin dashed grey;
+        border-bottom: thin dashed grey;
       }
     `;
 }
@@ -547,7 +606,8 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
           `;
       }
     } else
-      childContentEl = undefined;
+      // if tag has no children, display that
+      childContentEl = html`<p>no children</p>`;
 
     return html`
         ${showChildrenToggleEl}
