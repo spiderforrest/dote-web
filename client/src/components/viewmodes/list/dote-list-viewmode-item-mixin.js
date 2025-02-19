@@ -261,7 +261,7 @@ export class DoteListViewmodeTodoItem extends DoteListViewmodeItemMixin(LitEleme
       .dote-listmode-todo-itemcard-bodytoggle {
         border-left: thin solid grey;
         border-right: thin solid grey;
-        padding: 0.15em 0.25em 0.15em 0.25em;
+        padding: 0.05em 0.25em 0.05em 0.25em;
       }
 
       .dote-listmode-todo-itemcard-bodytoggle > .bodytextdisplay {
@@ -476,6 +476,8 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
     let bodyContentEl = undefined;
     // the footer displayed under the list of the tag's children, containing an "add child item" button
     let footerContentEl = undefined;
+    // the toggle for showing/hiding list of children
+    let showChildrenToggleEl = undefined;
 
     // if error loading item data
     if (this._thisItemLoadingError)
@@ -486,7 +488,7 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       return html`<p><i>loading item...</i></p>`;
 
     // once loaded
-    // if this item has body data, create an element for it
+    // if this item has body data create an element for it
     if (typeof this.itemData.body === "string") {
       // create the body element and populate it with the tag's body data
       bodyContentEl = html`
@@ -505,17 +507,19 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
           </details>`
     }
 
-    // if item has children, render the element for them
+    // if item has children...
     if (this.itemData.children.length > 0) {
+      // render a toggle button for showing/hiding list of children
+      showChildrenToggleEl = html`<button class="toggle-show-children-button" type="button" @click="${this._toggleChildrenMinimized}">${this.childrenMinimized ? "►" : "▼"}</button>`;
+      // if children are currently minimized, render minimized list
       if (this.childrenMinimized === true) {
-        // if children are currently minimized
         childContentEl = html`
           <section class="children-list">
             <p class="children-list-minimized">${this.itemData.children.length+" children"}</p>
           </section>
         `;
       } else {
-          // otherwise, if the children should be displayed
+          // if not minimized, render full list
           childContentEl = html`
           <section class="children-list">
             ${this.itemData.children.map((childId) => {
@@ -546,7 +550,7 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       childContentEl = undefined;
 
     return html`
-        <button class="toggle-show-children-button" type="button" @click="${this._toggleChildrenMinimized}">${this.childrenMinimized ? "►" : "▼"}</button>
+        ${showChildrenToggleEl}
         <section class="dote-listmode-tag-itemcard-rightside">
           <section class="dote-listmode-tag-itemcard-topbar">
             <h3 class="titledisplay">${this.itemData.title+" (tag)"}</h3>
@@ -568,7 +572,6 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
         flex-flow: row nowrap;
         align-items: stretch;
         gap: 1%;
-        margin-left: 2%;
         margin-bottom: 0.25%;
         margin-top: 0.25%;
         padding-top: 0.15%;
@@ -581,8 +584,12 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
         flex: 0 0 5%;
       }
 
+      .toggle-show-children-button {
+        flex: 1 1 5%;
+      }
+
       .dote-listmode-tag-itemcard-rightside {
-        flex: 2 0 90%;
+        flex: 2 1 95%;
       }
 
       .dote-listmode-tag-itemcard-topbar {
@@ -592,22 +599,30 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
         align-items: center;
         justify-content: space-between;
         border-top: thin solid grey;
-        border-bottom: thin solid grey;
+        border-left: thin solid grey;
+        border-right: thin solid grey;
+        border-radius: 0.6em 0.6em 0 0;
       }
 
       .dote-listmode-tag-itemcard-bottombar {
         display: flex;
         flex-flow: row nowrap;
         border: thin solid grey;
+        border-radius: 0 0 0.6em 0.6em;
         justify-content: center;
       }
 
       .dote-listmode-tag-itemcard-topbar > .titledisplay {
         flex: 4 0 65%;
+        text-align: center;
         margin: 0 0 0 0;
       }
 
       .dote-listmode-tag-itemcard-bodytoggle {
+        padding-left: 1%;
+        padding-right: 1%;
+        border-left: thin solid grey;
+        border-right: thin solid grey;
         border-bottom: thin solid grey;
       }
 
@@ -615,7 +630,6 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
         color: grey;
         font-style: italic;
       }
-
 
       .dote-itemcard-body-data {
         border: thin solid gold;
@@ -627,6 +641,7 @@ export class DoteListViewmodeTagItem extends DoteListViewmodeItemMixin(LitElemen
       
       .children-list {
         border-left: thin dashed grey;
+        border-right: thin dashed grey;
         padding-right: 1%;
         padding-left: 1%;
       }
